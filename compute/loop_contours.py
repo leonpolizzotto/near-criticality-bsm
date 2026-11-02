@@ -31,7 +31,8 @@ nothing becomes massless, as S has no gauge or Yukawa couplings, and the derivat
 
 Same physics and inputs as the phase maps (nearcrit/loop_maps.py: RG-improved, Lambda = 10 TeV).
 
-Writes data/loop_contour_<name>.npz for each contour (about 40 s each; `--only NAME` for one).
+Writes data/loop_contour_<name>.npz for each contour (about 1.5 min each). `python compute/loop_contours.py [name ...]`
+computes only these contours (default: all).
 """
 import sys
 from pathlib import Path
@@ -61,9 +62,13 @@ JUMP_TOL = 0.02          # relative jump of the ground state (in tree-normalized
 
 # name: the panel (r, kappa) and the ellipse Omega = centre + semi * (cos, sin) theta, over theta_lim (theta = 0 to 2 pi
 # unless it starts on a boundary). newton_iter: Newton steps for the minimum at the stencil points (default 40).
-# r1_k05 (Fig. 33): around the loop-level triple point (Omega_H, Omega_S) ~ (0.9, 1.0), wide enough to miss phase d
-#   (within ~0.05 of it) and to stay clear of NGS (Omega_H < 0.22). theta = 0 is close to the II -> III line, so the
-#   contour starts a little before it.
+# r1_k05 (Fig. 33): around the loop-level triple point (Omega_H, Omega_S) ~ (0.9, 1.0), wide enough to miss the wedge
+#   of phase d there (within ~0.05 of it) and to stay clear of NGS (Omega_H < 0.22). theta = 0 is close to the
+#   II -> III line, so the contour starts a little before it. At theta ~ pi it crosses the I b -> I a line at
+#   Omega_H = 0.4. Phase d continues along that line as a strip that narrows quickly away from the wedge (about 3e-4
+#   wide in Omega_S at Omega_H = 0.7, 5e-7 at 0.4). It comes from the top loop's H^4 ln H^2 near the S axis, where
+#   the tree-level mixed extremum is a saddle. The strip lies within SIDE_DTHETA of the transition, so the contour
+#   shows a single potential transition b -> a there, and the script warns that one side of it is d.
 # r2_k05_zoom (Fig. 34): through phase d, the radiatively generated mixed minimum-saddle pair of the zoom (0.5, 2.0).
 #   It crosses the d wedge (I d and III d, split by the first-order line) at Omega_S ~ 1.04, where it is still wide,
 #   and the thin I d strip above Omega_S ~ 1.006 on the way back, and goes round both corners on Omega_S ~ 1.006
@@ -339,9 +344,12 @@ def transition_ends(c, d):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__.split("\n")[0])
-    parser.add_argument("--only", choices=list(CONTOURS), help="one contour only")
+    parser.add_argument("names", nargs="*", metavar="name",
+                        help=f"contours to compute (default: all): {', '.join(CONTOURS)}")
     args = parser.parse_args()
-    for name in ([args.only] if args.only else CONTOURS):
+    if set(args.names) - set(CONTOURS):
+        parser.error(f"unknown name(s): {', '.join(sorted(set(args.names) - set(CONTOURS)))}")
+    for name in args.names or CONTOURS:
         c = CONTOURS[name]
         d = contour_data(name, c)
         # recomputed from the final points along the contour (contour_data's are from before the extra points)
