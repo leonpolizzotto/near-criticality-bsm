@@ -73,3 +73,11 @@ def set_ticks(ax, values):
 def region_color(color, alpha=0.3):
     """The colour of a fill at alpha over white."""
     return alpha * np.array(to_rgb(color)) + 1 - alpha
+
+
+def data_file(name, made_by):
+    """Path of data/<name>. Stops with a message naming the compute script made_by if the file is missing."""
+    path = DATA_DIR / name
+    if not path.exists():
+        raise SystemExit(f"{path} is missing: run `python {made_by}` first (see README.md).")
+    return path
