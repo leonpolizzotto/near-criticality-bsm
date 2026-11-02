@@ -25,69 +25,55 @@ pip install -r requirements.txt
 ## Reproducing the figures
 
 ```
-python make_figures.py              # all figures, from data/ (about 4 minutes)
-python make_figures.py 7 25-29      # only some figures, by their number in the paper
-python make_figures.py --compute    # recompute data/ first (slow, see below), then all figures
-python make_figures.py --tests      # run the tests (about a minute)
+python make_figures.py                 # all figures, from data/ (about 4 minutes)
+python make_figures.py 7 25-29         # only some figures, by their number in the paper
+python make_figures.py --compute 30    # recompute the data of Fig. 30 (about 1 hour, see below), then draw it
+python make_figures.py --compute       # recompute all of data/ (about 9 hours), then draw all figures
+python make_figures.py --tests         # run the tests (about a minute)
 ```
+
+Most figures take a few seconds each. Figs. 31-32 take about 15 s, because the gallery script evaluates the one-loop
+potential at each panel's point. The first run takes longest, while LaTeX builds its cache of the labels.
 
 The figures are written to `output/`, under the file names used in the paper's source. Every script can also be run
 on its own, from any directory, e.g. `python figures/fig07_sm_phase_diagram.py`.
 
-| Figure | Script | Output (in `output/`) | Data (in `data/`) |
-|---|---|---|---|
-| 1 | `figures/fig01_quartic_phases.py` | `1d_example.pdf` | – |
-| 2 | `figures/fig02_tilted_potential.py` | `1d_example_tilted.pdf` | – |
-| 3 | `figures/fig03_tilted_energy.py` | `1d_example_tilted_energy.pdf` | – |
-| 4 | `figures/fig04_phase_diagram_energy.py` | `1d_example_phase_diagram_energy.pdf` | – |
-| 5 | `figures/fig05_rg_flow.py` | `1d_example_phase_diagram_flow_t.pdf` | – |
-| 6 | `figures/fig06_critical_surface.py` | `gamma_surface_critical_coordinates.pdf` | – |
-| 7 | `figures/fig07_sm_phase_diagram.py` | `sm_weak_phase_diagram_decades.pdf` | `sm_weak_grid.npz` |
-| 8, 9 | `figures/fig08_09_sextic_levels.py` | `1d_example_6_energy_levels_delta.pdf`, `1d_example_6_energy_levels_mu2.pdf` | – |
-| 10, 11 | `figures/fig10_11_potential_phases.py` | `1d_example_potential_phases.pdf`, `1d_example_potential_phase_diagram.pdf` | – |
-| 12 | `figures/fig12_single_log_extrema.py` | `1d_example_running_1.pdf` | – |
-| 13 | `figures/fig13_single_log_ground_state.py` | `1d_example_running_1_E0.pdf` | – |
-| 14 | `figures/fig14_single_log_gallery.py` | `1d_example_running_1_gallery.pdf` | – |
-| 15 | `figures/fig15_H_and_G.py` | `1d_example_running_HG_stacked.pdf` | – |
-| 16 | `figures/fig16_regions.py` | `1d_example_running_regions.pdf` | – |
-| 17, 19 | `figures/fig17_19_crossover.py` | `1d_example_running_crossover.pdf`, `1d_example_running_crossover_potentials.pdf` | – |
-| 18 | `figures/fig18_circle_contour.py` | `1d_example_running_E0_circle.pdf` | – |
-| 20 | `figures/fig20_two_log_gallery.py` | `1d_example_running_gallery.pdf` | – |
-| 21, 22 | `figures/fig21_22_tree_atlases.py` | `tree_phase_atlas_Omega.pdf`, `tree_phase_atlas_mu.pdf` | – |
-| 23 | `figures/fig23_tree_gallery.py` | `2D_gallery_potentials.pdf` | – |
-| 24 | `figures/fig24_tree_contour.py` | `tree_contour_Omega.pdf` | – |
-| 25 | `figures/fig25_29_loop_phase_grids.py` | `loop_phase_grid_sm_rg.pdf` | `loop_grid_rg.npz` |
-| 26 | `figures/fig25_29_loop_phase_grids.py` | `loop_phase_corner_sm_rg.pdf` | `loop_corner.npz` |
-| 27 | `figures/fig25_29_loop_phase_grids.py` | `loop_phase_grid_sm_rg_kneg.pdf` | `loop_grid_rg_kneg.npz` |
-| 28 | `figures/fig25_29_loop_phase_grids.py` | `loop_phase_grid_sm_rg_kneg_mSneg.pdf` | `loop_grid_rg_kneg_mSneg.npz` |
-| 29 | `figures/fig25_29_loop_phase_grids.py` | `loop_phase_grid_sm_rg_mSneg.pdf` | `loop_grid_rg_mSneg.npz` |
-| 30 | `figures/fig30_loop_zooms.py` | `loop_phase_zoom_outer_sm_rg.pdf` | `loop_zoom.npz`, `loop_zoom_signs.npz` |
-| 31, 32 | `figures/fig31_32_loop_galleries.py` | `loop_gallery_gs_sm_rg.pdf`, `loop_gallery_ngs_sm_rg.pdf` | `loop_gallery_points.npz` |
-| 33 | `figures/fig33_36_loop_contours.py` | `loop_contour_r1_k05_sm_rg.pdf` | `loop_contour_r1_k05.npz`, `loop_grid_rg.npz` |
-| 34 | `figures/fig33_36_loop_contours.py` | `loop_contour_r2_k05_zoom_sm_rg.pdf` | `loop_contour_r2_k05_zoom.npz`, `loop_zoom.npz` |
-| 35 | `figures/fig33_36_loop_contours.py` | `loop_contour_rm1_km1_sm_rg.pdf` | `loop_contour_rm1_km1.npz`, `loop_grid_rg_kneg_mSneg.npz` |
-| 36 | `figures/fig33_36_loop_contours.py` | `loop_contour_rm05_km05_zoom_sm_rg.pdf` | `loop_contour_rm05_km05_zoom.npz`, `loop_zoom_signs.npz` |
-
 ## Recomputing the data
 
-Only Fig. 7 and Figs. 25-36 need precomputed data. Each compute script writes its files to `data/`:
+Only Fig. 7 and Figs. 25-36 need precomputed data. `python make_figures.py --compute N` recomputes everything that
+Fig. N needs (including the files that data is computed from) and then draws it. The compute scripts can also be run
+directly, for one file at a time:
 
-| Script | Writes | For figures | Time (one core) |
+| Data file (in `data/`) | Computed by | Used by figures | Time |
 |---|---|---|---|
-| `compute/sm_weak_grid.py` | `sm_weak_grid.npz`: the SM phase on two grids of (u, y_0), from the 3-loop running up to M_Pl | 7 | 2.5 min |
-| `compute/loop_phase_maps.py` | `loop_grid_rg*.npz`, `loop_corner.npz`, `loop_zoom*.npz`: the one-loop phase maps | 25-36 | ~8.5 h |
-| `compute/loop_gallery_points.py` | `loop_gallery_points.npz`: the parameter points of the gallery panels of phases d, e, g, h | 31, 32 | < 1 s |
-| `compute/loop_contours.py` | `loop_contour_*.npz`: the ground state and its derivatives along the four contours | 33-36 | ~1.5 min per contour |
+| `sm_weak_grid.npz` | `compute/sm_weak_grid.py` | 7 | 2.5 min |
+| `loop_grid_rg.npz` | `compute/loop_phase_maps.py loop_grid_rg` | 25, 33 | 1.1 h |
+| `loop_corner.npz` | `compute/loop_phase_maps.py loop_corner` | 26 | 1.3 h |
+| `loop_grid_rg_kneg.npz` | `compute/loop_phase_maps.py loop_grid_rg_kneg` | 27 | 1.25 h |
+| `loop_grid_rg_kneg_mSneg.npz` | `compute/loop_phase_maps.py loop_grid_rg_kneg_mSneg` | 28, 35 | 3.1 h |
+| `loop_grid_rg_mSneg.npz` | `compute/loop_phase_maps.py loop_grid_rg_mSneg` | 29 | 0.75 h |
+| `loop_zoom.npz` | `compute/loop_phase_maps.py loop_zoom` | 30-32, 34 | 18 min |
+| `loop_zoom_signs.npz` | `compute/loop_phase_maps.py loop_zoom_signs` | 30-32, 36 | 45 min |
+| `loop_gallery_points.npz` | `compute/loop_gallery_points.py` (from the two zoom files) | 31, 32 | seconds |
+| `loop_contour_<name>.npz` | `compute/loop_contours.py <name>` | 33-36 | 1.5 min each |
 
-`compute/loop_gallery_points.py` reads the zoom maps, so it runs after `compute/loop_phase_maps.py`
-(`make_figures.py --compute` runs them in this order). The phase maps are the slow step: each 160 x 160 panel takes
-about 5 minutes on one core. `compute/loop_phase_maps.py` saves every panel as soon as it is computed and resumes from
-the panels already in `data/` with the same settings, so it can be interrupted; delete a file to recompute it. Its
-`--only grid|corner|zoom` option computes one kind of map, so several can run in parallel.
+What the files contain:
+- `sm_weak_grid.npz`: the SM phase on two grids of (u, y_0), from the 3-loop running up to M_Pl.
+- `loop_*` maps: the one-loop phase maps, 160 x 160 points per panel.
+- `loop_gallery_points.npz`: the parameter points of the gallery panels of phases d, e, g and h.
+- `loop_contour_*.npz`: the ground state and its derivatives along the four contours.
 
-Measured times for `compute/loop_phase_maps.py`: the four grids 0.7, 0.75, 1.1 and 3.1 h, the corner 1.3 h, the two
-sets of zoom windows 0.3 and 0.8 h (each on one core, with the jobs sharing one machine). See Verification below for
-how the recomputed data compare with the committed data.
+`compute/loop_phase_maps.py` saves each panel as soon as it is computed, to `data/<name>.partial.npz`. The finished
+file replaces `data/<name>.npz` only at the end. If a run is interrupted, running the same command again resumes from
+the partial file.
+
+**About the times.** They were measured on a 2025 laptop (Intel Core Ultra 7 255H), with each script using one
+processor core. The speed of a single core is what matters, not the number of cores, so:
+- another recent laptop or desktop should take about as long (within a factor of 2);
+- an older computer takes longer.
+
+The scripts are independent apart from the gallery points, which need the two zoom files. You can run several at
+once, in separate terminals, to use more cores: the whole of `data/` then takes about 3 hours instead of 9.
 
 ## Layout
 
@@ -125,17 +111,13 @@ Run them with `python make_figures.py --tests`, one at a time with `python tests
 
 ## Verification
 
-Every figure made by this repository from the committed `data/` was compared with the version in the paper, pixel
-by pixel at 300 dpi, and they are identical.
+Every figure made by this repository from `data/` was compared with the version in the paper, pixel by pixel at
+300 dpi, and they are identical.
 
 All of `data/` was also recomputed from scratch with the scripts in `compute/`:
 - `sm_weak_grid.npz`, the gallery points and the four contours are bit-identical to the committed files.
-- The phase maps agree to a relative 4e-12 (rounding in the solved boundaries), with one exception: the committed
-  `loop_zoom.npz` has no inner cuts (the lines just inside the NGS edge) for the panel kappa = 1, r = 2, while a fresh
-  computation finds them. The committed file was made before the last change to the inner cuts, and
-  `compute/loop_phase_maps.py` only adds them where they are missing.
-- From the recomputed data, every figure is identical to the paper's except Fig. 30, whose panel (a) gains a
-  potential-transition line along the edge of the NGS region.
+- The phase maps agree with the committed files to a relative 4e-12, which is rounding in the solved boundaries.
+- The figures drawn from the recomputed data are pixel-identical.
 
 ## Citation
 
@@ -144,7 +126,7 @@ If you use this code, please cite the paper:
 ```
 @article{nearcriticality,
     title   = "{A framework for near-criticality in BSM physics}",
-    author  = "[AUTHORS]",
+    author  = "Lodman, Jackie and Polizzotto, Leon and Steingasser, Thomas",
     journal = "[JOURNAL]",
     eprint  = "XXXX.XXXXX",
     archivePrefix = "arXiv",
@@ -154,4 +136,4 @@ If you use this code, please cite the paper:
 
 ## License
 
-[LICENSE TO BE CHOSEN], see `LICENSE`.
+MIT, see `LICENSE`.
