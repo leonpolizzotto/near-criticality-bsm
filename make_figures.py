@@ -5,6 +5,7 @@
     python make_figures.py --compute       first recompute all of data/ (about 9 hours; see README.md), then all figures
     python make_figures.py --compute 30    first recompute only the data of Fig. 30, then Fig. 30
     python make_figures.py --tests         run the tests in tests/
+    python make_figures.py --no-tex        draw the text without LaTeX (also automatic if LaTeX is not installed)
 
 Each script runs in its own process, exactly as when it is run by hand, and writes its PDFs to output/.
 """
@@ -97,6 +98,7 @@ if __name__ == "__main__":
     parser.add_argument("figures", nargs="*", help="figure numbers or ranges (default: all)")
     parser.add_argument("--compute", action="store_true", help="recompute the data of these figures first (slow)")
     parser.add_argument("--tests", action="store_true", help="run the tests instead")
+    parser.add_argument("--no-tex", action="store_true", help="draw the text without LaTeX")
     args = parser.parse_args()
     if args.tests:
         for path in sorted((ROOT / "tests").glob("test_*.py")):
@@ -110,5 +112,5 @@ if __name__ == "__main__":
                 run(ROOT / script, *script_args)
     for script, numbers in FIGURES.items():
         if not wanted or wanted & set(numbers):
-            run(ROOT / "figures" / script)
+            run(ROOT / "figures" / script, *(["--no-tex"] if args.no_tex else []))
     print(f"Figures are in {ROOT / 'output'}")

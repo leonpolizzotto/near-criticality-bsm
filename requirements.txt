@@ -1,6 +1,6 @@
 # The exact versions the figures were made and verified with (Python 3.12.3, Linux).
-# The figures also need a LaTeX installation for matplotlib's usetex: latex and dvipng with the
-# type1cm, type1ec (cm-super) and amsmath packages (TeX Live 2026 was used).
+# The figures are typeset with LaTeX (matplotlib usetex): latex and dvipng with the type1cm, type1ec (cm-super)
+# and amsmath packages (TeX Live 2026 was used). Without them the figures are drawn without LaTeX (see README.md).
 numpy==2.4.4
 scipy==1.17.1
 matplotlib==3.10.9

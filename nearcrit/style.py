@@ -2,7 +2,15 @@
 
 The paper is an 11 pt jheppub article, so the text width is 430.2 pt. The figures are drawn at that width with
 11 pt LaTeX fonts and included with width=\\linewidth, so no rescaling happens.
+
+Without LaTeX (option --no-tex of any figure script or of make_figures.py, or automatically if LaTeX or one of its
+packages is missing) the text is drawn by matplotlib itself, in its Computer Modern fonts. The figures then look
+slightly different from the paper's.
 """
+import os
+import re
+import shutil
+import sys
 from pathlib import Path
 
 import matplotlib.pyplot as plt
@@ -26,11 +34,63 @@ RC = {
 }
 
 
+# Without LaTeX: matplotlib's own Computer Modern, for the text and for the maths.
+RC_NO_TEX = {
+    "text.usetex": False,
+    "font.serif": ["cmr10"],
+    "mathtext.fontset": "cm",
+    "axes.formatter.use_mathtext": True,     # cmr10 has no minus sign; mathtext draws it
+}
+
+
 def use(amsmath=False):
-    """Set the paper's rcParams. amsmath adds \\usepackage{amsmath} to the LaTeX preamble (for \\text)."""
+    """Set the paper's rcParams. amsmath adds \\usepackage{amsmath} to the LaTeX preamble (for \\text).
+    Falls back to drawing the text without LaTeX if asked to (--no-tex) or if LaTeX does not work."""
     plt.rcParams.update(RC)
     if amsmath:
         plt.rcParams.update({"text.latex.preamble": r"\usepackage{amsmath}"})
+    if "--no-tex" in sys.argv[1:] or os.environ.get("NEARCRIT_NO_TEX") or not _latex_works():
+        plt.rcParams.update(RC_NO_TEX)
+        _translate_labels()
+
+
+# The LaTeX in the labels that matplotlib's mathtext spells differently.
+_MATHTEXT = [(re.compile(r"\\displaystyle\s*\\frac"), r"\\dfrac"),
+             (re.compile(r"\\le(?![a-zA-Z])"), r"\\leq"),
+             (re.compile(r"\\ge(?![a-zA-Z])"), r"\\geq")]
+
+
+def _translate_labels():
+    """Make every text set from now on use the mathtext spelling of _MATHTEXT (without LaTeX only)."""
+    from matplotlib.text import Text
+    if getattr(Text.set_text, "translated", False):
+        return
+    set_text = Text.set_text
+
+    def translated(self, s):
+        if isinstance(s, str):
+            for pattern, repl in _MATHTEXT:
+                s = pattern.sub(repl, s)
+        set_text(self, s)
+    translated.translated = True
+    Text.set_text = translated
+
+
+def _latex_works():
+    """Whether matplotlib can typeset with LaTeX (with the preamble set now); prints why not if it cannot."""
+    if shutil.which("latex") is None:
+        print("note: LaTeX not found; drawing the text without it (the figures differ slightly from the paper's)")
+        return False
+    from matplotlib.texmanager import TexManager
+    try:
+        TexManager().make_dvi(r"$x$", 11)
+    except Exception as e:  # noqa: BLE001 (any failure of latex: a missing package, ...)
+        lines = str(e).strip().splitlines()
+        reason = next((line for line in lines if line.startswith("!")), lines[0] if lines else "")  # LaTeX's error
+        print(f"note: LaTeX failed ({reason}); drawing the text without it (the figures differ slightly from the "
+              f"paper's)")
+        return False
+    return True
 
 
 def savefig(fig, name, **kwargs):

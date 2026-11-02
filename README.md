@@ -10,9 +10,11 @@ remade in a few minutes without them.
 
 ## Installation
 
-The code needs Python 3 (3.12 was used) and a LaTeX installation, because the figures are typeset with LaTeX
-(matplotlib's `text.usetex`): `latex` and `dvipng`, with the `type1cm`, `type1ec` (cm-super) and `amsmath` packages,
-all included in a full TeX Live.
+The code needs Python 3 (3.12 was used). The paper's figures are typeset with LaTeX (matplotlib's `text.usetex`),
+which needs `latex` and `dvipng`, with the `type1cm`, `type1ec` (cm-super) and `amsmath` packages, all included in a
+full TeX Live. Without LaTeX the figures are still drawn: matplotlib then typesets the text itself, in the same
+Computer Modern fonts, so they look slightly different from the paper's. This happens automatically if LaTeX or one
+of its packages is missing, and can be asked for with `--no-tex`.
 
 ```
 python -m venv .venv
@@ -30,6 +32,7 @@ python make_figures.py 7 25-29         # only some figures, by their number in t
 python make_figures.py --compute 30    # recompute the data of Fig. 30 (about 1 hour, see below), then draw it
 python make_figures.py --compute       # recompute all of data/ (about 9 hours), then draw all figures
 python make_figures.py --tests         # run the tests (about a minute)
+python make_figures.py --no-tex        # draw the text without LaTeX (any figure script also takes --no-tex)
 ```
 
 Most figures take a few seconds each. Figs. 31-32 take about 15 s, because the gallery script evaluates the one-loop
@@ -81,7 +84,7 @@ once, in separate terminals, to use more cores: the whole of `data/` then takes 
 make_figures.py     entry point
 figures/            one plotting script per figure (or group of figures); they read data/ and write output/
 compute/            the slow computations; they write data/
-data/               their results, as compressed .npz files (nearcrit/data_io.py reads them; no pickle)
+data/               their results, as compressed .npz files (nearcrit/data_io.py reads them)
 nearcrit/           code shared by several scripts:
   style.py              figure size and fonts (the paper's text width, 11 pt LaTeX), axis-label helpers, paths
   toy_quartic.py        the quartic toy model (Figs. 1-5, 10, 11)
@@ -108,16 +111,6 @@ tests/              checks of the physics code (python make_figures.py --tests)
 - `test_tree_gallery.py`: every panel of Fig. 23 is in the potential phase it is labelled with.
 
 Run them with `python make_figures.py --tests`, one at a time with `python tests/<file>.py`, or with pytest.
-
-## Verification
-
-Every figure made by this repository from `data/` was compared with the version in the paper, pixel by pixel at
-300 dpi, and they are identical.
-
-All of `data/` was also recomputed from scratch with the scripts in `compute/`:
-- `sm_weak_grid.npz`, the gallery points and the four contours are bit-identical to the committed files.
-- The phase maps agree with the committed files to a relative 4e-12, which is rounding in the solved boundaries.
-- The figures drawn from the recomputed data are pixel-identical.
 
 ## Citation
 
