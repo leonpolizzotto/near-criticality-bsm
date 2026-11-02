@@ -298,11 +298,8 @@ if __name__ == "__main__":
     fill_points()
     for layout, key_slot, height, output in FIGURES:
         make_gallery(layout, key_slot, height, output)
-        make_gallery(layout, key_slot, height, output)
     print("Points:")
     for label, (kappa, r, oh, os_, _, _) in PANELS.items():
-        if oh is None:      # not drawn (--only)
-            continue
         lamH, lamS = L.lambdas_from_tree_Omegas(r, kappa, oh, os_)
         print(f"  {label:7s} kappa = {kappa:<5g} r = {r:<4g} Omega_H = {oh:.4f} Omega_S = {os_:.4f} "
               f"lambda_H = {lamH:.4f} lambda_S = {lamS:.4f}")
