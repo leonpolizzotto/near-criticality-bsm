@@ -16,7 +16,7 @@ Each file holds {"key": the settings, "panels": {(kappa, r): panel, (kappa, r, m
 as soon as it is computed, and a run picks up the panels already in a file with the same key, so an interrupted run
 resumes where it stopped (delete a file to recompute it).
 
-This is slow: a 160 x 160 panel takes ~5 min on one core, and all files together a few hours.
+This is slow: a 160 x 160 panel takes ~5 min on one core, and all files together ~8.5 h.
 
 Run `python compute/loop_phase_maps.py [--only grid|corner|zoom]`. The process caps its own memory (--max-mem-gb,
 default 16; Linux only) so that a runaway computation stops with a MemoryError instead of exhausting the machine.
