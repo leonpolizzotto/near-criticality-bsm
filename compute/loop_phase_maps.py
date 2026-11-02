@@ -12,14 +12,16 @@ method in nearcrit/loop_maps.py).
   data/loop_zoom.npz                the zoom windows ZOOMS (Figs. 30, 34 and the gallery points).
   data/loop_zoom_signs.npz          the zoom windows ZOOMS_SIGNS (Figs. 30, 36 and the gallery points).
 
-Each file holds {"key": the settings, "panels": {(kappa, r): panel, (kappa, r, m): refined inset m}}. A panel is saved
-as soon as it is computed, and a run picks up the panels already in a file with the same key, so an interrupted run
-resumes where it stopped (delete a file to recompute it).
+Each file holds {"key": the settings, "panels": {(kappa, r): panel, (kappa, r, m): refined inset m}}. While a file is
+computed, every panel is saved to data/<name>.partial.npz as soon as it is done, and the file replaces data/<name>.npz
+only when it is complete. A run picks up the panels of a partial file with the same settings, so an interrupted run
+resumes where it stopped; otherwise every run computes from scratch.
 
-This is slow: a 160 x 160 panel takes ~5 min on one core, and all files together ~8.5 h.
+This is slow: a 160 x 160 panel takes ~5 min on one core, and all files together ~8.5 h (times per file in README.md).
 
-Run `python compute/loop_phase_maps.py [--only grid|corner|zoom]`. The process caps its own memory (--max-mem-gb,
-default 16; Linux only) so that a runaway computation stops with a MemoryError instead of exhausting the machine.
+Run `python compute/loop_phase_maps.py [name ...]`, e.g. `python compute/loop_phase_maps.py loop_zoom` (default: all
+files). The process caps its own memory (--max-mem-gb, default 16; Linux only) so that a runaway computation stops
+with a MemoryError instead of exhausting the machine.
 """
 import sys
 from pathlib import Path
@@ -39,26 +41,32 @@ CORNER_WINDOW = ((0.7, 1.1), (0.96, 1.14))
 NCORNER = 160
 
 
+def partial(path):
+    """Where the panels of path are kept while it is being computed."""
+    return path.with_name(path.stem + ".partial.npz")
+
+
 def load(path, key):
-    """The panels already computed in path with this key ({} if none)."""
-    if path.exists():
-        saved = data_io.load(path)
+    """The panels of an interrupted run of path with this key ({} if none)."""
+    if partial(path).exists():
+        saved = data_io.load(partial(path))
         if saved["key"] == key:
             return saved["panels"]
     return {}
 
 
 def save(path, key, panels):
-    """Save the panels computed so far, with their key."""
+    """Save the panels computed so far, with their key (to the partial file)."""
     style.DATA_DIR.mkdir(exist_ok=True)
-    data_io.save(path, dict(key=key, panels=panels))
+    data_io.save(partial(path), dict(key=key, panels=panels))
 
 
 def finish(path, key, panels):
-    """Add the inner cuts and the outer ground states that are missing, and save."""
+    """Add the inner cuts and the outer ground states that are missing, save to path, and remove the partial file."""
     add_inner_cuts(panels, LOOP_RG)        # lines just inside the NGS edge
     add_outer_ground_states(panels, LOOP_RG)
-    save(path, key, panels)
+    data_io.save(path, dict(key=key, panels=panels))
+    partial(path).unlink(missing_ok=True)
 
 
 def grid(kappa_sign=1, r_sign=1):
@@ -136,22 +144,31 @@ def zoom(zooms, name):
     finish(path, key, panels)
 
 
+# Each file and how it is made.
+MAPS = {
+    "loop_grid_rg": lambda: grid(1, 1),
+    "loop_grid_rg_kneg": lambda: grid(-1, 1),
+    "loop_grid_rg_mSneg": lambda: grid(1, -1),
+    "loop_grid_rg_kneg_mSneg": lambda: grid(-1, -1),
+    "loop_corner": corner,
+    "loop_zoom": lambda: zoom(ZOOMS, "loop_zoom.npz"),
+    "loop_zoom_signs": lambda: zoom(ZOOMS_SIGNS, "loop_zoom_signs.npz"),
+}
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__.split("\n")[0])
-    parser.add_argument("--only", choices=("grid", "corner", "zoom"), help="only these maps")
+    parser.add_argument("names", nargs="*", metavar="name",
+                        help=f"files to compute (default: all): {', '.join(MAPS)}")
     parser.add_argument("--max-mem-gb", type=float, default=16.0, help="memory cap for this process (Linux)")
     args = parser.parse_args()
+    if set(args.names) - set(MAPS):
+        parser.error(f"unknown name(s): {', '.join(sorted(set(args.names) - set(MAPS)))}")
     try:
         import resource
         cap = int(args.max_mem_gb * 2**30)
         resource.setrlimit(resource.RLIMIT_AS, (cap, cap))
     except (ImportError, ValueError, OSError):
         print("note: could not cap the memory of this process")
-    if args.only in (None, "grid"):
-        for kappa_sign, r_sign in ((1, 1), (-1, 1), (1, -1), (-1, -1)):
-            grid(kappa_sign, r_sign)
-    if args.only in (None, "corner"):
-        corner()
-    if args.only in (None, "zoom"):
-        zoom(ZOOMS, "loop_zoom.npz")
-        zoom(ZOOMS_SIGNS, "loop_zoom_signs.npz")
+    for name in args.names or MAPS:
+        MAPS[name]()

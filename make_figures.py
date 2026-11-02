@@ -1,9 +1,10 @@
 """Make the figures of "A framework for near-criticality in BSM physics".
 
-    python make_figures.py              all figures, from the data in data/ (a few minutes)
-    python make_figures.py 7 25-29      only these figures (by number in the paper)
-    python make_figures.py --compute    first recompute the data in data/ (hours; see README.md), then all figures
-    python make_figures.py --tests      run the tests in tests/
+    python make_figures.py                 all figures, from the data in data/ (a few minutes)
+    python make_figures.py 7 25-29         only these figures (by number in the paper)
+    python make_figures.py --compute       first recompute all of data/ (about 9 hours; see README.md), then all figures
+    python make_figures.py --compute 30    first recompute only the data of Fig. 30, then Fig. 30
+    python make_figures.py --tests         run the tests in tests/
 
 Each script runs in its own process, exactly as when it is run by hand, and writes its PDFs to output/.
 """
@@ -15,9 +16,34 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
 
-# The slow steps, in the order they depend on each other (the gallery points come from the zoom maps).
-COMPUTE = ["compute/sm_weak_grid.py", "compute/loop_phase_maps.py", "compute/loop_gallery_points.py",
-           "compute/loop_contours.py"]
+# Each data file (in data/) and the command that computes it, in the order they depend on each other (the gallery
+# points come from the zoom maps).
+COMPUTE = {
+    "sm_weak_grid": ["compute/sm_weak_grid.py"],
+    **{name: ["compute/loop_phase_maps.py", name]
+       for name in ("loop_grid_rg", "loop_grid_rg_kneg", "loop_grid_rg_mSneg", "loop_grid_rg_kneg_mSneg",
+                    "loop_corner", "loop_zoom", "loop_zoom_signs")},
+    "loop_gallery_points": ["compute/loop_gallery_points.py"],
+    **{f"loop_contour_{name}": ["compute/loop_contours.py", name]
+       for name in ("r1_k05", "r2_k05_zoom", "rm1_km1", "rm05_km05_zoom")},
+}
+
+# The data each figure needs, including what that data is computed from (figures not listed need none).
+DATA = {
+    7: ["sm_weak_grid"],
+    25: ["loop_grid_rg"],
+    26: ["loop_corner"],
+    27: ["loop_grid_rg_kneg"],
+    28: ["loop_grid_rg_kneg_mSneg"],
+    29: ["loop_grid_rg_mSneg"],
+    30: ["loop_zoom", "loop_zoom_signs"],
+    31: ["loop_zoom", "loop_zoom_signs", "loop_gallery_points"],
+    32: ["loop_zoom", "loop_zoom_signs", "loop_gallery_points"],
+    33: ["loop_grid_rg", "loop_contour_r1_k05"],
+    34: ["loop_zoom", "loop_contour_r2_k05_zoom"],
+    35: ["loop_grid_rg_kneg_mSneg", "loop_contour_rm1_km1"],
+    36: ["loop_zoom_signs", "loop_contour_rm05_km05_zoom"],
+}
 
 
 # Each plotting script and the figures (numbered as in the paper) it makes.
@@ -58,28 +84,30 @@ def parse_numbers(args):
     return numbers
 
 
-def run(path):
+def run(path, *args):
     """Run one script in its own process (stops if it fails)."""
     t0 = time.time()
-    print(f"--- {path.relative_to(ROOT)}", flush=True)
-    subprocess.run([sys.executable, str(path)], check=True)
+    print(f"--- {' '.join([str(path.relative_to(ROOT)), *args])}", flush=True)
+    subprocess.run([sys.executable, str(path), *args], check=True)
     print(f"    ({time.time() - t0:.0f} s)", flush=True)
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     parser.add_argument("figures", nargs="*", help="figure numbers or ranges (default: all)")
-    parser.add_argument("--compute", action="store_true", help="recompute the data first (slow)")
+    parser.add_argument("--compute", action="store_true", help="recompute the data of these figures first (slow)")
     parser.add_argument("--tests", action="store_true", help="run the tests instead")
     args = parser.parse_args()
     if args.tests:
         for path in sorted((ROOT / "tests").glob("test_*.py")):
             run(path)
         sys.exit()
-    if args.compute:
-        for script in COMPUTE:
-            run(ROOT / script)
     wanted = parse_numbers(args.figures)
+    if args.compute:
+        needed = {d for n in (wanted or DATA) for d in DATA.get(n, [])}
+        for name, (script, *script_args) in COMPUTE.items():
+            if name in needed:
+                run(ROOT / script, *script_args)
     for script, numbers in FIGURES.items():
         if not wanted or wanted & set(numbers):
             run(ROOT / "figures" / script)

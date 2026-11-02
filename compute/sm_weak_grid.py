@@ -4,7 +4,7 @@ u = lambda_0 - lambda_c(y0_best) and y_0 = y_t(M_t), with lambda_0 = lambda(M_t)
 For every grid point (lambda_0, y_0) the other couplings are set to their measured values at M_t, eqs. (58)-(60) of
 arXiv:1307.3536, all couplings run up to M_Pl with the 3-loop RGEs, and the point is classified (nearcrit/sm_rge.py).
 
-Writes data/sm_weak_grid.npz (about 3 s).
+Writes data/sm_weak_grid.npz (about 2.5 min).
 """
 import sys
 from pathlib import Path

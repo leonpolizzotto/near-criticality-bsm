@@ -2,7 +2,7 @@
 which are too thin to pick by hand. Each is the cell of a zoom map (data/loop_zoom.npz, data/loop_zoom_signs.npz)
 farthest from the boundary of its phase.
 
-Writes data/loop_gallery_points.npz (about a minute: labelling the zoom maps).
+Writes data/loop_gallery_points.npz (a few seconds).
 """
 import sys
 from pathlib import Path
