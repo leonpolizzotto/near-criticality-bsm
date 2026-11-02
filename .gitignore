@@ -1,0 +1,13 @@
+# Paper source and local working files (not part of the public repo)
+Paper_Draft_*.pdf
+*.tex
+fig_names.txt
+PHASE1_REPORT.md
+# Reference copies of the original figures and caches, used only to verify this repo
+baseline/
+# Generated figures
+output/
+# Python
+__pycache__/
+*.pyc
+.venv/
