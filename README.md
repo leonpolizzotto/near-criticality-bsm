@@ -112,6 +112,16 @@ tests/              checks of the physics code (python make_figures.py --tests)
 
 Run them with `python make_figures.py --tests`, one at a time with `python tests/<file>.py`, or with pytest.
 
+## How this code was written
+
+Most of the code in this repository was written by Claude, an AI model made by Anthropic, using Claude Code, working
+under the direction of the authors. The authors wrote the potentials and most of the explicit expressions for the
+phase boundaries of the single-field models and of the tree-level two-field model. Claude turned these into the
+figures, and chose and implemented the numerical methods for the one-loop two-field model (finding its extrema and
+solving for its phase boundaries). Claude also reorganized the code into this repository and checked that every figure
+reproduces the paper's. The authors designed the computations and reviewed the code and its results, and they take
+full responsibility for both.
+
 ## Citation
 
 If you use this code, please cite the paper:
