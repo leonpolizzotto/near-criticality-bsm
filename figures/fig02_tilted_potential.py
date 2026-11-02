@@ -14,6 +14,7 @@ from nearcrit.style import LINEWIDTH_IN
 from nearcrit.toy_quartic import V1D_example_tilted, local_minima
 
 style.use()
+
 # Tilted potential (phi^3 term) at mu2 < 0, lambda > 0, where the broken phase always exists.
 # Phase I (delta > 0) has its global minimum at phi < 0, phase II (delta < 0) at phi > 0, and
 # at delta = 0 the two minima are degenerate.

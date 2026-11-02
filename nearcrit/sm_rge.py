@@ -67,6 +67,7 @@ def weak_scale_couplings(Mh=MH0, Mt=MT0, alpha3=AS0, MW=MW0):
 # Renormalisation group equations (appendix B)
 # ---------------------------------------------------------------------------------------------------
 
+
 def beta(x):
     """dx/d ln(mu) for x = (g1^2, g2^2, g3^2, yt^2, yb^2, ytau^2, lambda); eqs. (96)-(99), (101)-(103).
 
@@ -203,6 +204,7 @@ def gamma_higgs(x):
 # Effective potential (appendix C)
 # ---------------------------------------------------------------------------------------------------
 
+
 def li2(z):
     """Dilogarithm Li_2(z) for complex z (scipy's spence(z) is Li_2(1 - z))."""
     return spence(1 - np.asarray(z, dtype=complex))
@@ -285,6 +287,7 @@ def log_decay_probability(t, lam):
 # Running and classification
 # ---------------------------------------------------------------------------------------------------
 
+
 def run_rge(x, t_start, t_end, n_steps=N_STEPS, Gamma_start=None):
     """Run the couplings x (shape (7,) or (7, N)) from ln(mu) = t_start to t_end with RK4.
 
@@ -365,10 +368,14 @@ def classify(run):
 # The stability boundary near the SM, in the weak-scale couplings (eq. (2.42) of the paper)
 # ---------------------------------------------------------------------------------------------------
 
+
 def lambda_c(y0):
+    """The linearised stability bound lambda_c(y_0), eq. (2.42) of the paper."""
     return 0.13521 + 0.734 * (y0 - 0.93690)
 
+
 def u(lambda0, y0):
+    """The distance u = lambda_0 - lambda_c(y_0) from the stability bound."""
     return lambda0 - lambda_c(y0)
 
 

@@ -16,6 +16,8 @@ from nearcrit.style import LINEWIDTH_IN
 from nearcrit.toy_quartic import beta_function_sol, beta_function_sol_t, plot_phase_diagram
 
 style.use()
+
+
 def flow_curve_off_axis(mu20, lambda0, mu0=1.0, n=400, lambda_end=4.0):
     """Flow line from (mu20, lambda0), with lambda0 slightly off lambda = 0, running off the plot.
 
@@ -36,6 +38,7 @@ class HandlerArrow(HandlerPatch):
     """Legend handler that draws a FancyArrowPatch as a horizontal arrow across the handle box."""
 
     def create_artists(self, legend, orig_handle, xdescent, ydescent, width, height, fontsize, trans):
+        """The arrow, horizontally across the legend handle box."""
         y = height / 2 - ydescent
         arrow = FancyArrowPatch(
             (-xdescent, y), (width - xdescent, y), arrowstyle=orig_handle.get_arrowstyle(),

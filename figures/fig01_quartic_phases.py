@@ -14,6 +14,7 @@ from nearcrit.style import LINEWIDTH_IN
 from nearcrit.toy_quartic import V1D_example, plot_minima
 
 style.use()
+
 # Quantum phases (the ones with a ground state) and the transitions between them. Each panel is
 # (title, [(mu2, lambda, label), ...]); several curves in one panel are distinguished by label.
 quantum_phases = [

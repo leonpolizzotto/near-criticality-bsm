@@ -21,6 +21,8 @@ from nearcrit.singlet_loop import (
 )
 
 VERBOSE = "-v" in sys.argv
+
+
 def run_checks(ngrid=61, verbose=True):
     """1. gradient and the axis second derivatives agree with finite differences of V;
     2. with the loop switched off (eps = 0) the classification reproduces

@@ -4,10 +4,12 @@ derivatives, in the Omega and lambda parametrizations of Sec. 5.
     V = -mu_H^2 |H|^2 / 2 - mu_S^2 |S|^2 / 2 + lambda_H |H|^4 / 4 + lambda_S |S|^4 / 4 + kappa |H|^2 |S|^2 / 4,
 
 with Omega_H = 2 lambda_H mu_S^2 / (kappa mu_H^2) and Omega_S = 2 lambda_S mu_H^2 / (kappa mu_S^2). The extrema are
-P0 (origin), P1 (H axis), P2 (S axis) and P3 (mixed). The used part of tree_quantum_phases_fns.py.
+P0 (origin), P1 (H axis), P2 (S axis) and P3 (mixed). 
 """
 import numpy as np
 from scipy import ndimage
+
+
 def Omegas_from_lambdas(lambdaH, lambdaS, muH2, muS2, kappa):
     """(OmegaH, OmegaS, omega_prod) induced by the physical parameters.
 
@@ -65,6 +67,7 @@ def is_bounded_below_Omega(OmegaH, OmegaS, muH2, muS2, kappa):
 
 
 def Vbar_Omega(Hbar, Sbar, OmegaH, OmegaS, muH2, muS2, kappa):
+    """The tree-level potential in the normalized fields (Hbar, Sbar), in the Omega parametrization."""
     return (muH2*muS2/kappa) * ((-Hbar**2 + Hbar**4/2)/OmegaH +
                                 (-Sbar**2 + Sbar**4/2)/OmegaS +
                                 Hbar**2 * Sbar**2/(OmegaH * OmegaS))
@@ -154,7 +157,9 @@ def select_branch(P, branches):
 # at fixed (muH2, muS2, kappa). Every branch is (muH2 muS2 / kappa) times a function of
 # the Omegas alone, so the mus enter only through that prefactor.
 
+
 def dVmin_OmegaH(P, OmegaH, OmegaS, muH2, muS2, kappa):
+    """dV_min/dOmega_H on branch P (0-3), at fixed (muH2, muS2, kappa)."""
     OmegaH = np.asarray(OmegaH, dtype=float)
     OmegaS = np.asarray(OmegaS, dtype=float)
     zero = np.zeros(np.broadcast(OmegaH, OmegaS).shape)
@@ -169,6 +174,7 @@ def dVmin_OmegaH(P, OmegaH, OmegaS, muH2, muS2, kappa):
 
 
 def dVmin_OmegaS(P, OmegaH, OmegaS, muH2, muS2, kappa):
+    """dV_min/dOmega_S on branch P (0-3), at fixed (muH2, muS2, kappa)."""
     OmegaH = np.asarray(OmegaH, dtype=float)
     OmegaS = np.asarray(OmegaS, dtype=float)
     zero = np.zeros(np.broadcast(OmegaH, OmegaS).shape)
@@ -183,6 +189,7 @@ def dVmin_OmegaS(P, OmegaH, OmegaS, muH2, muS2, kappa):
 
 
 def ddVmin_OmegaH(P, OmegaH, OmegaS, muH2, muS2, kappa):
+    """d^2V_min/dOmega_H^2 on branch P (0-3), at fixed (muH2, muS2, kappa)."""
     OmegaH = np.asarray(OmegaH, dtype=float)
     OmegaS = np.asarray(OmegaS, dtype=float)
     zero = np.zeros(np.broadcast(OmegaH, OmegaS).shape)
@@ -197,6 +204,7 @@ def ddVmin_OmegaH(P, OmegaH, OmegaS, muH2, muS2, kappa):
 
 
 def ddVmin_OmegaS(P, OmegaH, OmegaS, muH2, muS2, kappa):
+    """d^2V_min/dOmega_S^2 on branch P (0-3), at fixed (muH2, muS2, kappa)."""
     OmegaH = np.asarray(OmegaH, dtype=float)
     OmegaS = np.asarray(OmegaS, dtype=float)
     zero = np.zeros(np.broadcast(OmegaH, OmegaS).shape)
@@ -237,6 +245,7 @@ def ddVmin_OmegaH_OmegaS(P, OmegaH, OmegaS, muH2, muS2, kappa):
 # derivative order, which is the natural Ehrenfest readout: V_min is continuous at a
 # change of global minimum, so a jump in the FIRST projected derivative is a first-order
 # transition and a jump in only the SECOND is a second-order one.
+
 
 def _ellipse_unit_tangent(c0, c1, x0, y0, a, b):
     """Unit tangent of the ellipse (c0 - x0)^2/a^2 + (c1 - y0)^2/b^2 = 1 at a point ON it,

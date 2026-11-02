@@ -46,6 +46,7 @@ def _encode(obj, arrays):
 
 
 def _decode(desc, arrays):
+    """The object described by desc (inverse of _encode)."""
     if desc is None or isinstance(desc, (bool, str, int)):
         return desc
     (tag, value), = desc.items()

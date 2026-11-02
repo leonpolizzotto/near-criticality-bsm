@@ -14,10 +14,15 @@ from scipy.optimize import brentq
 from scipy.special import lambertw
 
 from nearcrit.style import set_xlabel_right, set_ylabel_top
+
+
 def F(x):
+    """F(x) = x^2 (4 ln x + 1) / 2 (eq. (4.10)): the extrema of V4p8 are where F = a/c."""
     return (4*np.log(x) + 1) * x**2 / 2
 
+
 def V4p8(x,a_over_c, sign_c=1):
+    """The single-log potential (4.8) divided by its prefactor, -(a/c) x^2 + x^4 ln x (times sign_c)."""
     if sign_c != 1 and sign_c != -1:
         raise ValueError("sign_c must be +1 or -1")
     return (- a_over_c * x**2 + x**4 * np.log(x)) * sign_c
@@ -25,18 +30,26 @@ def V4p8(x,a_over_c, sign_c=1):
 a_over_c_CRIT_1 = 0.0
 a_over_c_CRIT_2 = -np.exp(-1.5)
 
+
 def G(y,b):
+    """G_b(y) (eq. (4.20)): the extrema of V4p17 are where G = a."""
     return (2*b + np.log(y)*(2*np.log(y) + 1)) * y**2
 
+
 def H(y):
+    """H(y) (eq. (4.21)): the extrema of G_b are where H = b."""
     return -0.25 - 1.5*np.log(y) - np.log(y)**2
 
+
 def a_plus_minus(b, pm):
+    """a_+(b) (pm = +1) and a_-(b) (pm = -1), eq. (4.23): the values of G at its maximum and minimum."""
     if pm != 1 and pm != -1:
         raise ValueError("pm must be +1 or -1")
     return 0.5 * np.exp(-1.5 - pm * 0.5*np.sqrt(5 - 16*b)) * (2 + pm * np.sqrt(5 - 16*b))
 
+
 def V4p17(y,a,b):  # V4p17' = 2y (G(y, b) - a)
+    """The two-log potential (4.19), -a y^2 + (b + ln^2 y) y^4."""
     return - a * y**2 + (b + np.log(y)**2) * y**4
 
 b_CRIT = 5/16
@@ -105,6 +118,7 @@ def n_extrema_bands(a_lim, b_lim):
 
 
 def format_phase_diagram(ax, a_lim, b_lim, tick_b0=True):
+    """Zero lines, ticks at the critical values, limits and axis labels of an (a, b) diagram."""
     ax.axhline(0, color="gray", lw=0.5)
     ax.axvline(0, color="gray", lw=0.5)
     ax.set_xticks([0, np.exp(-1.5)], [r"$0$", r"$a_\text{crit}$"])
@@ -231,6 +245,7 @@ B_WIDOM_END = 9 / 16
 
 
 def ln_y_widom(b):
+    """ln y of the Widom line at b (b_crit < b < 9/16)."""
     return (-5 + np.sqrt(9 - 16 * b)) / 4
 
 
@@ -261,10 +276,12 @@ PHASE_NAMES = {0: "0", 1: "I", 2: "II"}  # quantum phases: P0 is 0, P1 is I, P2 
 
 
 def phase_legend_handles():
+    """Legend handles for the quantum phases 0, I, II."""
     return [Patch(color=1 - PHASE_ALPHA * (1 - PHASE_COLORS[P]), label=PHASE_NAMES[P]) for P in range(3)]
 
 
 def hatch_legend_handles():
+    """Legend handles for the number of extrema (hatches)."""
     return [Patch(facecolor="white", edgecolor=HATCH_COLOR, hatch=N_EXTREMA_HATCHES[n], lw=0.5, label=rf"${n}$")
             for n in range(4)]
 
@@ -290,11 +307,14 @@ PHASE_IMAGE = phase_color(_y_pixels, _P_pixels, _B_pixels)
 L_first_order = np.linspace(0, 1.5, 400)
 a_first_order_P0_P2 = -L_first_order * np.exp(2 * L_first_order)
 b_first_order_P0_P2 = -L_first_order * (L_first_order + 1)
+
+
 # P1 <-> P2 (a > 0), 0 < b < b_CRIT: at each b, the a where E_P1 = E_P2. Both minima exist for max(a_-, 0) < a < a_+
 # (y = 0 is not a minimum for a > 0, so they are the only competitors), and d(E_P1 - E_P2)/da = y2^2 - y1^2 > 0 there
 # (envelope theorem), so E_P1 - E_P2 has exactly one root in that interval, found by Brent's method. The line runs from
 # the critical end point (0, 0) to the critical point (e^{-3/2}, b_CRIT), where a_- = a_+.
 def first_order_a_P1_P2(b):
+    """The a of the first-order line P1 <-> P2 at b (0 < b < b_crit)."""
     a_lo, a_hi = max(a_minus(b), 0.0), a_plus(b)
     margin = 1e-9 * (a_hi - a_lo)  # the minima are only defined strictly inside the interval
     def energy_difference(a):
@@ -475,9 +495,8 @@ def single_log_n_extrema(r):
 
 
 def single_log_phase_rgb(in_II, alpha=PHASE_ALPHA):
+    """Colour of quantum phase II (where in_II) or 0 over white, at alpha."""
     return 1 - alpha * (1 - np.where(np.asarray(in_II)[..., None], PHASE_COLORS[2], PHASE_COLORS[0]))
-
-
 
 
 # Extrema of V4p17 at y > 0, for the potential figures below. V4p17' = 2y (G(y, b) - a), so they are the solutions of
@@ -512,9 +531,9 @@ EXTREMUM_MARKERS = {"ground": dict(color="C3", ms=5), "metastable": dict(color="
 
 
 def V_curve(y, a, b):
+    """V4p17 on y >= 0, with V(0) = 0."""
     with np.errstate(divide="ignore", invalid="ignore"):
         return np.where(y > 0, V4p17(y, a, b), 0.0)
-
 
 
 def V_limits(y_plot, V_plot, Vs):

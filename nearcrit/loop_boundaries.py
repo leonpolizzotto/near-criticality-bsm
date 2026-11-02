@@ -58,6 +58,7 @@ _S_SLACK = 0.05                 # accept solutions this far (in edge lengths) ou
 # Models with other couplings
 # ---------------------------------------------------------------------------------------------------------------------
 
+
 def model_with_lambdas(P, lamH, lamS, kappa=None):
     """P (1D coupling arrays) with lambda_H, lambda_S (and kappa, if given) replaced. With RG improvement the running
     is redone from the new couplings at M_t, with the same SM couplings, range and step as P's table."""
@@ -74,6 +75,7 @@ def model_with_lambdas(P, lamH, lamS, kappa=None):
 # ---------------------------------------------------------------------------------------------------------------------
 # Which condition holds on each edge
 # ---------------------------------------------------------------------------------------------------------------------
+
 
 def _minima(ext, has_origin_min):
     """The minima of one grid point as (kind, coords) with absolute coords: () for the origin, (x,) on the H axis,
@@ -109,6 +111,7 @@ def _coords(ext, kind, index):
 
 
 def _gs_coords(kind, Hbar, Sbar, xb, yb):
+    """The ground state's (H^2, S^2) coordinates for its kind (none at the origin)."""
     return {"0": (), "H": (Hbar**2 * xb,), "S": (Sbar**2 * yb,), "M": (Hbar**2 * xb, Sbar**2 * yb)}[kind]
 
 
@@ -219,6 +222,7 @@ def structural_event(st_a, st_b, ext_a, ext_b, mu1):
 # The conditions, as residuals in (unknown field coordinates..., s)
 # ---------------------------------------------------------------------------------------------------------------------
 
+
 def _point(kind, zc, xb, yb):
     """(x, y) of an extremum of the given kind from its log coordinates zc (columns)."""
     zero = np.zeros(xb.shape)
@@ -232,6 +236,7 @@ def _point(kind, zc, xb, yb):
 
 
 def _stationarity(kind, x, y, P, xb, yb, vs):
+    """The stationarity conditions of an extremum of this kind, scaled to be O(1)."""
     if kind == "0":
         return []
     gx, gy = L.gradient(x, y, P)
@@ -243,6 +248,7 @@ def _stationarity(kind, x, y, P, xb, yb, vs):
 
 
 def _residual(event, kinds=None, cutoff=None):
+    """The equations F(z) = 0 that define the boundary of this event, for Newton's method."""
     def F(z, P, xb, yb, vs):
         if event == "origin_H":
             gx, _ = L.gradient(0.0 * xb, 0.0 * xb, P)
@@ -422,6 +428,7 @@ def _solve_bracket(P, A, B, event, cutoff, seeds=None, n_iter=45):
 # All edges of a grid
 # ---------------------------------------------------------------------------------------------------------------------
 
+
 def _edge_list(shape):
     """Flat indices (a, b) of every edge: first across columns (row-major over (ny, nx-1)), then across rows."""
     ny, nx = shape
@@ -561,6 +568,7 @@ def _refine(res, A, B, map_kwargs, max_depth, depth, n_sub=8):
 # Curves from edge points
 # ---------------------------------------------------------------------------------------------------------------------
 
+
 def edge_points(pos_c, pos_r, hc, sc):
     """Coordinates of every edge's crossing point: the solved one, or the edge midpoint where there is none."""
     ny, nx = sc.size, hc.size
@@ -579,7 +587,7 @@ def polylines(active_c, active_r, all_c, all_r, points, min_free_points=4, loose
     that square's crossing points. Isolated curves (no junction at either end) with fewer than min_free_points points
     are dropped as grid noise. Returns a list of (N, 2) arrays. If loose is a list, the edges of short pieces of
     curve (at most short points) and of dropped curves are appended to it as (orientation, i, j): where a line breaks up
-    because the grid does not resolve what lies between (see auto_refine in loop_phase_grid.py)."""
+    because the grid does not resolve what lies between (see auto_refine_insets in loop_maps.py)."""
     (Xc, Yc), (Xr, Yr) = points
 
     def xy(node):

@@ -84,6 +84,7 @@ def sigma_of(x, y):
 
 
 def inside(P, tol=1e-9):
+    """Whether the points P (last axis gamma^1, gamma^2, ...) lie within the drawn patch of the gamma^1-gamma^2 plane."""
     return ((P[..., 0] >= G1_RANGE[0] - tol) & (P[..., 0] <= G1_RANGE[1] + tol)
             & (P[..., 1] >= G2_RANGE[0] - tol) & (P[..., 1] <= G2_RANGE[1] + tol))
 
@@ -96,6 +97,7 @@ def tangents(s1, s2, h=1e-5):
 
 
 def normal(s1, s2):
+    """Unit normal of the surface at sigma = (s1, s2), pointing up (positive gamma^3)."""
     d1, d2 = tangents(s1, s2)
     n = np.cross(d1, d2)
     n /= np.linalg.norm(n)
@@ -215,6 +217,7 @@ def draw_frame(ax, sig, L1, L2, label1_below=False, label2_below=False):
 
 
 def draw_axes(ax):
+    """The three gamma axes from the origin, with their labels."""
     o = np.zeros(3)
     ends = {0: 2.35, 1: 0.90, 2: 1.15}
     labels = {0: r"$\gamma^1$", 1: r"$\gamma^2$", 2: r"$\gamma^3$"}
@@ -230,6 +233,7 @@ def draw_axes(ax):
 
 
 def make_figure():
+    """Draw the sketch and save it."""
     fig, ax = plt.subplots(figsize=(LINEWIDTH_IN, 2.96))  # height-limited: this sets the scale
     ax.set_aspect("equal")
     ax.axis("off")

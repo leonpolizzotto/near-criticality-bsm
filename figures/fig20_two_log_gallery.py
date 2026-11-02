@@ -17,6 +17,7 @@ from nearcrit.toy_running import (
 
 style.use(amsmath=True)
 plt.rcParams["hatch.linewidth"] = 0.3
+
 # Gallery: the potential in each of the six potential phases, named by quantum phase and number of extrema at y > 0
 # (00, 02, I3, II2, II3), except that the one-extremum region, which joins I and II round the critical point, is a
 # single supercritical phase SC1. Along b = 1/8: 0 < a_- = 0.0711 < a_FO = 0.1101 < a_+ = 0.1751 (SC1 | I3 | II3 |

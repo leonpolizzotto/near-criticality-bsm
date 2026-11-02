@@ -21,6 +21,8 @@ from nearcrit.toy_running import (
 
 style.use(amsmath=True)
 plt.rcParams["hatch.linewidth"] = 0.3
+
+
 def plot_single_log_ground_state(r_lim, c_contour, filename, a_lim=(-0.4, 0.3), c_lim=(-0.6, 1.3), color=CONTOUR_COLOR,
                                  n_r=4001):
     """The (a, c) phase diagram with the line c = c_contour, a / c_contour in r_lim, and the ground state along it."""

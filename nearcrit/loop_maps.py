@@ -75,7 +75,7 @@ NGRID = 160                             # cell centres (k + 1/2) * OMEGA_MAX / N
 
 # --- Potential phases ------------------------------------------------------------------------------------------
 # A potential phase is an extremum structure (origin, H axis, S axis, off the axes). Structures of the tree-level
-# potential keep their tree letter (a, b, c, hatched as in tree_phase_atlas.py); the others are radiatively
+# potential keep their tree letter (a, b, c, hatched as in the tree-level figures); the others are radiatively
 # generated and get the next letters. Without a ground state, the hatch is the set of local minima that remain
 # (other than the origin), listed deepest first.
 NEW_HATCHES = ["xxx", "+++", "///---", "\\\\\\---", "xxx---", "+++---"]   # d, e, f, g, h, i
@@ -115,6 +115,7 @@ def phase_color(q):
 
 
 def tex_label(q):
+    """Quantum phase label for LaTeX (primes typeset)."""
     return q.replace("'", "$'$")
 
 
@@ -154,7 +155,7 @@ FULL_WINDOW = ((0.0, OMEGA_MAX), (0.0, OMEGA_MAX))
 AUTO_TILE = 8
 AUTO_N = 80
 REFINE_RG = {
-    # phase e (zoom (b) of loop_phase_zoom.py): the strip between the NGS edge and the fold, about one cell wide
+    # phase e (Fig. 30 (a)): the strip between the NGS edge and the fold, about one cell wide
     # (fine cells 0.00016 across, where the NGS edge, the first-order line and the fold come within 0.0006)
     (1.0, 2.0): [dict(inset=((0.0875, 0.1375), (1.15, 2.0)), n=(480, 140))],
     # its mirror for mu_S^2 < 0: phase g (Ic plus a second H-axis minimum) at Omega < 0
@@ -381,7 +382,6 @@ def inner_jumps(panel, r, kappa, loop=None, n_sub=12):
     return {name: dict(pos_c=v[:nc].reshape(ny, nx - 1), pos_r=v[nc:].reshape(ny - 1, nx)) for name, v in out.items()}
 
 
-
 def add_inner_cuts(panels, loop=None):
     """Adds inner_cuts to the panels {(kappa, r[, m]): panel} that lack them; whether any were added."""
     missing = [kk for kk, p in panels.items() if "inner2" not in p or "inner_jumps2" not in p]
@@ -398,7 +398,7 @@ def add_inner_cuts(panels, loop=None):
 def outer_ground_states(panel, key, loop):
     """Where the ground state is not the innermost minimum of its kind (H axis, S axis or off the axes). Only points
     with more than one such minimum can qualify; they are few, so they are re-evaluated here (their positions are
-    not cached) and checked against the cached structure."""
+    not stored) and checked against the stored structure."""
     kappa, r = key[:2]
     st, gk, run = panel["structure"], panel["gs_kind"], panel["runaway"]
     slot = {"H": 1, "S": 2, "M": 3}
@@ -433,7 +433,6 @@ def ground_state_is_outer(res, i):
         radii = sorted(np.hypot(np.sqrt(x / xbar[i]), np.sqrt(y / ybar[i])) for x, y, t in ex["M"] if t == "min")
     gs = np.hypot(res["gs_Hbar"][i], res["gs_Sbar"][i])
     return bool(abs(gs - radii[0]) > 1e-6 * (1 + gs))
-
 
 
 def add_outer_ground_states(panels, loop=None):
@@ -496,6 +495,7 @@ GALLERY_ZOOMS = {"d": "loop_zoom.npz", "e": "loop_zoom.npz", "g": "loop_zoom_sig
 
 # --- Drawing -----------------------------------------------------------------------------------------------------
 def hatch_of(q, letter):
+    """The hatch of potential phase letter in quantum phase q (None for no hatch)."""
     if q == "NP":
         return None
     if q == "NGS":
@@ -520,7 +520,7 @@ def line_edges(panel, Q, P):
 
     st = panel["structure"]
     order = panel.get("order")
-    if order is None:   # a cache from before the depth order was recorded
+    if order is None:   # data from before the depth order was recorded
         order = np.full(st.shape, None, dtype=object)
     swapped = np.vectorize(
         lambda sa, sb, oa, ob, q: (sa is not None and sa == sb and oa is not None and ob is not None and oa != ob
@@ -596,7 +596,7 @@ def _draw_map(ax, panel, Q, P, clip, clip_fills=None):
     # Where each line crosses each edge: the solved condition (see loop_boundaries.py), else the edge midpoint.
     hc, sc = OH[0], OS[:, 0]
     edges = panel.get("edges")
-    if edges is None:   # a cache from before the solved boundaries
+    if edges is None:   # data from before the solved boundaries
         edges = dict(pos_c=np.full(all_c.shape, np.nan), pos_r=np.full(all_r.shape, np.nan))
     pos_c, pos_r = edges["pos_c"], edges["pos_r"]
     points = B.edge_points(pos_c, pos_r, hc, sc)
@@ -660,7 +660,7 @@ def draw_panel(ax, panel, Q, P, r, kappa, ticks=None, fines=()):
         grown = ((max(a - e, h0), min(b + e, h1)), (max(c - e, s0), min(d + e, s1)))
         _draw_map(ax, fine, Qf, Pf, _rect_path([fine["inset"]]), clip_fills=_rect_path([grown]))
 
-    # Tree-level boundaries (as in tree_phase_atlas_Omega.pdf, mu_H^2 > 0), drawn exactly.
+    # Tree-level boundaries (as in Fig. 21, mu_H^2 > 0), drawn exactly.
     tree = dict(color=TREE_LINE_STYLE["colors"], lw=TREE_LINE_STYLE["linewidths"], ls=TREE_LINE_STYLE["linestyles"],
                 zorder=3)
     for xs, ys in tree_lines(np.sign(kappa), np.sign(r), window):
@@ -739,7 +739,7 @@ def present_entries(labelled):
 
 
 def add_legends(fig, y0, quantum_phases, potential_entries, gap_in=0.35, row_gap_in=0.1):
-    """Keys centred below the panels, as add_legends in tree_phase_atlas.py, in three rows: the lines (with the
+    """Keys centred below the panels, as add_legends in singlet_tree_plot.py, in three rows: the lines (with the
     tree-level boundaries added), the quantum phases (colours) and the potential phases (hatches). Returns the top
     of the keys in figure coordinates."""
     kw = _LEGEND_KW
@@ -760,7 +760,6 @@ def add_legends(fig, y0, quantum_phases, potential_entries, gap_in=0.35, row_gap
         leg.set_bbox_to_anchor((0.5 - w / 2, y), transform=fig.transFigure)
         y += h + row_gap_in / H
     return y - row_gap_in / H
-
 
 
 def make_grid_figure(panels, kappa_values, r_values, output, ticks=None):

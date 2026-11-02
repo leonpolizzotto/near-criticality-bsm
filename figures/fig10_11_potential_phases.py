@@ -17,6 +17,7 @@ from nearcrit.style import LINEWIDTH_IN, set_xlabel_right
 from nearcrit.toy_quartic import V1D_example, plot_minima
 
 style.use()
+
 # Potential phases of the untilted potential. Unlike the quantum phases, these only depend on
 # the signs of mu2 and lambda, so a phase does not need to have a minimum (phase NGS0 has none).
 # Each entry is (mu2, lambda, title) with mu2, lambda in {-1, 0, 1}.
@@ -71,7 +72,7 @@ style.savefig(fig, "1d_example_potential_phases.pdf")
 # The color is the quantum phase (as in plot_phase_diagram) and the black hatch is the potential phase. There
 # are no labels on the diagram: two legends below it give the colors and the hatches separately.
 HALF_LINEWIDTH_IN = 0.5 * LINEWIDTH_IN
-HATCH_COLOR = "0.5"  # gray hatching with boxed legend handles, as in 1d_example_running.py
+HATCH_COLOR = "0.5"  # gray hatching with boxed legend handles, as in Figs. 13-20
 
 
 def plot_potential_phase_diagram(fig, ax, x0):
@@ -79,6 +80,8 @@ def plot_potential_phase_diagram(fig, ax, x0):
     # No Ground State, so they share a color.
     # Phases 1 and 2 have the same hatch density (the same number of characters), and the legend uses
     # the very same strings.
+    """Fig. 11 on ax: colour = quantum phase, hatch = potential phase, with the two legends to its right
+    (x0 = their left edge in figure coordinates). Returns the two legends."""
     hatches = ["//", r"\\", "--", "xx"]  # phases 1, 2, NGS0, NGS1
     regions = [
         ([0, 1, 1, 0], [0, 0, 1, 1], "C0", hatches[0]),

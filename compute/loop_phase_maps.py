@@ -49,6 +49,7 @@ def load(path, key):
 
 
 def save(path, key, panels):
+    """Save the panels computed so far, with their key."""
     style.DATA_DIR.mkdir(exist_ok=True)
     data_io.save(path, dict(key=key, panels=panels))
 

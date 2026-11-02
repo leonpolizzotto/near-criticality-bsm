@@ -17,13 +17,20 @@ from nearcrit import style
 from nearcrit.style import LINEWIDTH_IN, set_xlabel_right
 
 style.use()
+
+
 def V(phi, mu2, delta, lambda_, c5, c6):
+    """The sextic potential (3.2)."""
     return mu2*phi**2/2 + delta*phi**3/3 + lambda_*phi**4/4 + c5*phi**5/5 + c6*phi**6/6
 
+
 def dV(phi, mu2, delta, lambda_, c5, c6):
+    """dV/dphi."""
     return mu2*phi + delta*phi**2 + lambda_*phi**3 + c5*phi**4 + c6*phi**5
 
+
 def ddV(phi, mu2, delta, lambda_, c5, c6):
+    """d^2V/dphi^2."""
     return mu2 + 2*delta*phi + 3*lambda_*phi**2 + 4*c5*phi**3 + 5*c6*phi**4
 
 

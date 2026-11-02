@@ -157,7 +157,9 @@ def lambdas_from_tree_Omegas(r, kappa, OmegaH, OmegaS):
 # The potential and its derivatives in (x, y) = (H^2, S^2)
 # ---------------------------------------------------------------------------------------
 
+
 def _logabs(u, mu2):
+    """ln(|u| / mu2), safe at u = 0."""
     return np.log(np.maximum(np.abs(u), _TINY) / mu2)
 
 
@@ -189,10 +191,12 @@ def _scalar_block(x, y, P):
 
 
 def _goldstone_mass(x, y, P):
+    """Tree-level Goldstone mass^2 of H, (1/H) dV/dH, at (x, y) = (H^2, S^2)."""
     return -P.muH2 + P.lamH * x + 0.5 * P.kappa * y
 
 
 def _goldstone_mass_S(x, y, P):
+    """Tree-level Goldstone mass^2 of S, (1/S) dV/dS, at (x, y) = (H^2, S^2)."""
     return -P.muS2 + P.lamS * y + 0.5 * P.kappa * x
 
 
@@ -414,6 +418,7 @@ def attach_rg(P, sm, field2_max):
 
 
 def _rg_t(x, y, P):
+    """RG time t = ln(mu / mu0) at the field-dependent scale mu^2 = mu0^2 + H^2 + S^2."""
     return 0.5 * np.log1p((x + y) / P.rg.mu02)
 
 
@@ -427,6 +432,7 @@ def _rg_fixed_model(P, t):
 
 
 def _rg_V_at(x, y, P, t):
+    """The RG-improved potential at (x, y) with the couplings run to t."""
     Pf, xi2, omega = _rg_fixed_model(P, t)
     return _potential_fixed(xi2 * x, y, Pf) + omega
 
@@ -545,6 +551,7 @@ def _transverse_positive(Omega1, mu2_transverse):
 # Root finding
 # ---------------------------------------------------------------------------------------
 
+
 def _scales(P):
     """Natural field scales xbar = |muH2|/lamH and ybar = |muS2|/lamS (the tree VEVs),
     and the matching energy scale."""
@@ -555,6 +562,7 @@ def _scales(P):
 
 
 def _chunks(n, size):
+    """Index ranges of at most size elements covering range(n)."""
     for i in range(0, n, size):
         yield np.arange(i, min(i + size, n))
 
@@ -571,8 +579,8 @@ def _bisect(fun, lo, hi, n_iter=60):
     return 0.5 * (lo + hi)
 
 
-# With a cutoff, the searched region is the disk H^2 + S^2 <= cutoff^2. Stored in the figure
-# scripts' cache keys, so that caches made with the earlier square search are not reused.
+# With a cutoff, the searched region is the disk H^2 + S^2 <= cutoff^2. Stored in the keys of the
+# data files, so that data made with the earlier square search are not reused.
 SEARCH_REGION = "disk"
 
 
@@ -808,7 +816,9 @@ def _cell_changes(b):
 # Classification
 # ---------------------------------------------------------------------------------------
 
+
 def _type_from_curvatures(a, b):
+    """Extremum type from its two curvatures."""
     if a > 0 and b > 0:
         return 'min'
     if a < 0 and b < 0:
@@ -844,6 +854,7 @@ _FIRST_NEW_CODE = max(tq.PHASE_LABELS) + 1
 
 
 def _describe(sig):
+    """Readable description of an extremum signature."""
     p0, h, s, m, gs = sig
     fmt = lambda t: '[' + ', '.join(t) + ']' if t else 'none'
     return (f"origin {p0}; H axis {fmt(h)}; S axis {fmt(s)}; mixed {fmt(m)}; "
@@ -851,6 +862,7 @@ def _describe(sig):
 
 
 def _code_of_signature(sig):
+    """Phase code of an extremum signature: the tree code, or a new code registered on first sight."""
     label = TREE_SIGNATURES.get(sig)
     if label is not None:
         return tq._LABEL_TO_POTENTIAL_CODE[label]
@@ -1204,6 +1216,7 @@ def loop_phase_map(r, kappa, lambdaH, lambdaS, mu, muH2=1.0, eps=1.0, n_goldston
 # ---------------------------------------------------------------------------------------
 # First-order jumps of the ground state
 # ---------------------------------------------------------------------------------------
+
 
 def ground_state_jumps(res, jump_tol=0.3):
     """Neighbor pairs where the ground state jumps between two distinct minima, as two

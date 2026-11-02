@@ -14,6 +14,7 @@ from nearcrit.style import LINEWIDTH_IN, set_xlabel_right
 from nearcrit.toy_quartic import E0_tilted, dE0_ddelta, d2E0_ddelta2, mark_critical_point
 
 style.use()
+
 # Ground state energy and its derivatives as a function of delta (mu2 < 0, lambda > 0).
 mu2 = -1.0
 lambda_ = 1.0

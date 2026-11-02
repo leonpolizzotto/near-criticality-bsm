@@ -15,23 +15,22 @@ from nearcrit.singlet_tree import (
     _fill_phase_seams, _transition_order,
 )
 from nearcrit.style import region_color
-# Colours of the quantum phases, as in the earlier phase maps of tree_quantum_phases_fns.py: there each potential
+# Colours of the quantum phases, as in the earlier phase maps (PHASE_COLORS in singlet_tree.py): there each potential
 # phase has its own shade, and a quantum phase is the middle shade of its family (Ib, IIb, IIIb; 0), drawn at
 # the same PHASE_ALPHA. They are drawn as opaque colours over white, so that neighbouring regions leave no seams.
 _SHADE = {label: PHASE_COLORS[code] for code, label in PHASE_LABELS.items()}
 QUANTUM_COLORS = {"0": _SHADE["0"], "I": _SHADE["Ib"], "II": _SHADE["IIb"], "III": _SHADE["IIIb"]}
 NGS_COLOR = "gray"
-HATCH_COLOR = "0.5"  # gray hatching with boxed legend handles, as in 1d_example_running.py
+HATCH_COLOR = "0.5"  # gray hatching with boxed legend handles, as in Figs. 13-20
 # Potential phases by their letter within the quantum phase (lines only, since dot hatches come out black).
 HATCHES = {"a": "///", "b": "\\\\\\", "c": "---"}
-# Potential phase transitions that are not quantum phase transitions, as A_PM_STYLE in 1d_example_running.py.
+# Potential phase transitions that are not quantum phase transitions, as A_PM_STYLE in toy_running.py.
 POTENTIAL_TRANSITION_STYLE = dict(colors="#8e24aa", linewidths=1.1)
 
 
 def quantum_color(label):
     """The fill colour of the quantum phase with this label."""
     return region_color(QUANTUM_COLORS[label], PHASE_ALPHA)
-
 
 
 def draw_phase_map(ax, X, Y, PH):

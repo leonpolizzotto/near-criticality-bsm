@@ -17,6 +17,8 @@ from nearcrit.toy_running import (
 
 style.use(amsmath=True)
 plt.rcParams["hatch.linewidth"] = 0.3
+
+
 # Second figure (2x2): H and G on top, V4p17 (placeholder so far) and the (a, b) phase diagram below.
 # G' = 4y (b - H), so the extrema of G are where H = b: ln y = (-3 +- sqrt(5 - 16 b)) / 4. H has its maximum
 # b_CRIT = 5/16 at y = e^{-3/4}; for b < b_CRIT the root below e^{-3/4} is a maximum of G and the one above a

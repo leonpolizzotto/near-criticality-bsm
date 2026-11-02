@@ -27,6 +27,8 @@ from nearcrit.style import LINEWIDTH_IN, set_xlabel_left, set_xlabel_right, set_
 style.use()
 
 MADE_BY = "compute/loop_phase_maps.py"
+
+
 def make_figure(panels, zooms, output, height_in, ylabel_all=False, w_pad=2.0, box_aspect=1.0):
     """One row of zoom windows, in the order of zooms, with the keys below. ylabel_all labels Omega_S on every panel
     (for panels with different scales), not only on the first. box_aspect is the panels' height / width."""
@@ -39,7 +41,7 @@ def make_figure(panels, zooms, output, height_in, ylabel_all=False, w_pad=2.0, b
             draw_panel(ax, panels[key], Q, P, r, kappa, ticks=z["ticks"])
             ax.set_box_aspect(box_aspect)
             ax.set_title(rf"({tag})\ $r = {r:g},\ \kappa = {kappa:g}$")
-            # labels at the far end of each axis from where Omega = 0 lies (as in loop_phase_grid.py)
+            # labels at the far end of each axis from where Omega = 0 lies (as in make_grid_figure)
             (h0, h1), (s0, s1) = z["window"]
             if h1 <= 0:
                 set_xlabel_left(ax, r"$\Omega_H$")

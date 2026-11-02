@@ -32,8 +32,8 @@ from nearcrit.style import LINEWIDTH_IN, set_ticks, set_xlabel_right, set_ylabel
 
 style.use()
 
-CONTOUR_COLOR = "C3"  # as in 1d_example_running.py
-# Transition lines in the panels against theta, as in 1d_example_running.py (thinner than on the phase map).
+CONTOUR_COLOR = "C3"  # as in Figs. 13 and 18
+# Transition lines in the panels against theta, as in Fig. 18 (thinner than on the phase map).
 THETA_TRANSITION_LW = 1.0
 THETA_TICK_LABELS = {-1: r"$-\pi/2$", 0: r"$0$", 1: r"$\pi/2$", 2: r"$\pi$", 3: r"$3\pi/2$"}
 
@@ -60,7 +60,7 @@ def contour_data(muH2, muS2, kappa, OmegaH_lim, OmegaS_lim, theta_lim, n_theta=4
 
 def draw_contour(ax, c, color=CONTOUR_COLOR):
     """The contour on the phase map, with a dot at its start (theta = 0) and an arrow showing its direction, as
-    draw_contour in 1d_example_running.py (here at theta = pi/4, clear of the boundaries through the start)."""
+    draw_contour in toy_running.py (here at theta = pi/4, clear of the boundaries through the start)."""
     ax.plot(c["OH"], c["OS"], color=color, lw=1.5, zorder=5)
     i0 = np.argmin(np.abs(c["theta"]))
     ax.plot(c["OH"][i0], c["OS"][i0], "o", color=color, ms=3.5, zorder=6)
@@ -114,6 +114,8 @@ def plot_along_contour(ax, c, values, color=CONTOUR_COLOR):
 
 def plot_contour_figure(muH2, muS2, kappa, OmegaH_lim, OmegaS_lim, plane_lim, theta_lim, filename,
                         height_in=6.1):
+    """The figure for the ellipse inscribed in OmegaH_lim x OmegaS_lim at (muH2, muS2, kappa), with the phase map
+    over plane_lim and the panels over theta_lim; saved as output/<filename>."""
     c = contour_data(muH2, muS2, kappa, OmegaH_lim, OmegaS_lim, theta_lim)
     for i in np.flatnonzero(np.diff(c["PH"])) + 1:
         print(f"theta = {0.5 * (c['theta'][i - 1] + c['theta'][i]):.4f} at (OmegaH, OmegaS) = "

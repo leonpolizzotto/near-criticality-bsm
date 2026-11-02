@@ -1,5 +1,5 @@
 """Gallery of the potential phases of the RG-improved one-loop Higgs-singlet potential that do not exist at tree
-level: the loop analogue of ../tree_phases/2D_gallery.py. Two figures, one panel per phase, each at a parameter
+level: the loop analogue of Fig. 23. Two figures, one panel per phase, each at a parameter
 point well inside it in the phase maps (PANELS below; the point is re-classified when the script runs, and the
 script stops if it is not in the phase it is labelled with):
 
@@ -17,8 +17,8 @@ script stops if it is not in the phase it is labelled with):
                  minimum and a saddle; the ground state is the inner (IIIh) or the outer (III'h) mixed minimum.
       IIIi       mu_S^2 > 0, kappa < 0: the same for IIIa (origin max, saddles on both axes). Phase i is a sliver
                  (about 1e-4 wide in Omega_S) along the NGS edge at kappa = -0.5, r = 1, too thin to see in
-                 loop_phase_grid_sm_rg_kneg.pdf; the ground state there is the inner or the outer mixed minimum.
-  - loop_gallery_ngs_sm_rg.pdf: the NGS potentials.
+                 Fig. 27; the ground state there is the inner or the outer mixed minimum.
+  - Fig. 32, loop_gallery_ngs_sm_rg.pdf: the NGS potentials.
       NGS_...    V on the disk |H|^2 + |S|^2 <= Lambda^2 (Lambda = 10 TeV) has a local minimum on its edge: a
                  valley of V crosses the cutoff with V still falling outward, so there is no ground state below
                  Lambda (in the panels: the light, low-V region along the H axis at the right edge); the subscript
@@ -31,7 +31,7 @@ script stops if it is not in the phase it is labelled with):
                  off-axis one (tree phase IIb plus the barrier); it is not shown separately.
 
 Each panel shows the potential over (|H|/v_0, |S|/w_0), with v_0^2 = mu_H^2/lambda_H and w_0^2 = |mu_S^2|/lambda_S
-(the tree-level VEVs where they exist), as in 2D_gallery.py. Each panel is focused on its own extrema, so the ranges differ from panel
+(the tree-level VEVs where they exist), as in Fig. 23. Each panel is focused on its own extrema, so the ranges differ from panel
 to panel (see the ticks): an axis is linear from 0 to a bit past the outermost extremum when they all lie within
 twice the tree VEV, and symlog (linear up to 1, logarithmic beyond) out to 1.8 times the outermost one when they
 span more, as for the large-field barriers and minima. No axis goes past the cutoff Lambda except in Ie, I'e and
@@ -43,9 +43,8 @@ V_0 = mu_H^4 / (4 lambda_H) the depth of the tree-level H minimum, so that both 
 the much deeper large-field region are visible; levels are evenly spaced in it. The curves are the zeros of
 dV/d|H| (solid) and dV/d|S| (dashed) off the axes; the axes themselves are zeros of the other derivative.
 
-Physics and inputs as in loop_phase_grid.py (RG-improved, SM couplings at M_t, Lambda = 10 TeV).
+Physics and inputs as in nearcrit/loop_maps.py (RG-improved, SM couplings at M_t, Lambda = 10 TeV).
 
-Run `python loop_gallery.py` from any directory (`--only gs` or `--only ngs` for one gallery).
 
 Reads data/loop_gallery_points.npz (made by compute/loop_gallery_points.py) for the points of phases d, e, g and h.
 At each point the phase is re-checked (loop_phase_map at that single point) before it is drawn.
@@ -90,7 +89,7 @@ FIGURES = [
       ["NGS_S", "NGS_0", None]], (2, 2), 6.5, "loop_gallery_ngs_sm_rg.pdf"),
 ]
 
-# Styles as in 2D_gallery.py.
+# Styles as in Fig. 23.
 CMAP = LinearSegmentedColormap.from_list("V", ["#f4f7fb", "#9db7d5", "#3d6a9e"])
 CONTOUR_COLOR = "#1f3a5c"
 CURVE_STYLE = {"h": dict(color="k", lw=1.2, ls="-"), "s": dict(color="k", lw=1.2, ls="--")}
@@ -110,7 +109,6 @@ LARGE_FIELD_H = ("Ie", "I'e", "Ig", "I'g")
 PAST_CUTOFF_H = ("Ie", "I'e", "I'g")
 PAST_CUTOFF = 1.15
 BEYOND_CUTOFF_STYLE = dict(facecolor="none", edgecolor="k", hatch="////", lw=0)  # hatch: keeps the colours
-
 
 
 def fill_points():
@@ -200,6 +198,7 @@ def past_cutoff_top(P, v0):
 
 
 def plot_panel(ax, label):
+    """One panel: the potential at the point of phase label, its derivative zero curves and its extrema."""
     res = point(label)
     P = res["model"]
     xbar, ybar, _ = (float(v[0]) for v in L._scales(P))
@@ -267,6 +266,7 @@ def add_key(ax, ground_state=True):
 
 
 def make_gallery(layout, key_slot, height, output):
+    """One gallery figure: the panels in layout, the key in key_slot; saved as output/<output>."""
     fig, axes = plt.subplots(len(layout), len(layout[0]), figsize=(LINEWIDTH_IN, height))
     for row_axes, row in zip(axes, layout):
         for ax, label in zip(row_axes, row):

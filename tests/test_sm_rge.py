@@ -12,6 +12,8 @@ import numpy as np
 from nearcrit.sm_rge import (
     AS0, DAS, G1, G2, G3, LAM, MH0, MT0, T0, T_PL, YT, lowest_zero, run_rge, weak_scale_couplings,
 )
+
+
 def planck_scale_fit(Mh=MH0, Mt=MT0, alpha3=AS0):
     """lambda(M_Pl) and y_t(M_Pl) from the linear fits eqs. (61e) and (61d)."""
     dMh, dMt, das = Mh - MH0, Mt - MT0, (alpha3 - AS0) / DAS

@@ -40,6 +40,8 @@ REGION_RGB = [tuple(1 - REGION_ALPHA * (1 - np.array(to_rgb(c)))) for c in REGIO
 
 
 def plot_regions(fig, ax, x0, a_lim, b_lim, label_positions, tick_b0):
+    """The regions A, B, C on ax, shaded and labelled at label_positions, with the key to the right (x0 = left
+    edge of the key column in figure coordinates). Returns the key."""
     a_lo, a_hi = a_lim
     b_lo, b_hi = b_lim
     b_below = np.linspace(b_lo, b_CRIT, 800)

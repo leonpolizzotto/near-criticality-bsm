@@ -59,6 +59,7 @@ def parse_numbers(args):
 
 
 def run(path):
+    """Run one script in its own process (stops if it fails)."""
     t0 = time.time()
     print(f"--- {path.relative_to(ROOT)}", flush=True)
     subprocess.run([sys.executable, str(path)], check=True)

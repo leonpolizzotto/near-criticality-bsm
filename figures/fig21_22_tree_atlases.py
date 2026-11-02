@@ -22,6 +22,8 @@ from nearcrit.singlet_tree_plot import HATCH_RC, NGS_COLOR, add_legends, draw_ph
 from nearcrit.style import LINEWIDTH_IN, region_color, set_ticks, set_xlabel_right, set_ylabel_top
 
 style.use()
+
+
 def plot_Omega_panel(ax, sH, sS, omega_max=2.0, ngrid=800):
     """Phases in the (Omega_H, Omega_S) plane for sign(mu_H^2) = sH and sign(mu_S^2) = sS.
 

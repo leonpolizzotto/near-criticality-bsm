@@ -14,6 +14,7 @@ from nearcrit.style import LINEWIDTH_IN, set_xlabel_right
 from nearcrit.toy_quartic import E0, dE0_dmu2, d2E0_dmu22, mark_critical_point, plot_phase_diagram
 
 style.use()
+
 # Ground state energy and its derivatives as a function of mu2 (lambda > 0).
 # The functions are not defined at mu2 = 0, so each side is evaluated separately.
 lambda_ = 1.0

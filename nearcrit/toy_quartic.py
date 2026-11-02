@@ -10,6 +10,7 @@ def V1D_example(phi, mu2, lambda_):
     """1D example potential function."""
     return 0.5 * mu2 * phi**2 + 0.25 * lambda_ * phi**4
 
+
 def V1D_example_tilted(phi, mu2, lambda_,delta):
     """1D example potential function."""
     return 0.5 * mu2 * phi**2 + 0.25 * lambda_ * phi**4 + delta * phi**3 / 3
@@ -137,7 +138,6 @@ def plot_minima(ax, phi, V, lambda_, color="C3"):
     ax.plot(pm, Vm, "o", color=color, ms=6, zorder=3, **kw)
 
 
-
 def mark_critical_point(ax, label="0", value=0.0):
     """Tick the x axis at the critical value only, labelled (0 unless the critical value is not 0)."""
     ax.set_xticks([value])
@@ -145,18 +145,22 @@ def mark_critical_point(ax, label="0", value=0.0):
 
 
 def beta_function_sol(mu, mu0, mu20, lambda0):
-
+    """(mu2, lambda) at scale mu from (mu20, lambda0) at mu0: dlambda/dln(mu) = 9 lambda^2 / (8 pi^2),
+    mu2 ~ lambda^(1/3)."""
     lambda_sol = 8 * np.pi**2 * lambda0 / (8 * np.pi**2 - 9 * lambda0 * np.log(mu/mu0))
     mu2_sol = mu20 * (lambda_sol / lambda0)**(1/3)
 
     return mu2_sol, lambda_sol
 
+
 def beta_function_sol_t(mu, mu0, t0, lambda0):
 
+    """(t, lambda) at scale mu from (t0, lambda0) at mu0, with t = t0 (mu0 / mu)^2."""
     lambda_sol = 8 * np.pi**2 * lambda0 / (8 * np.pi**2 - 9 * lambda0 * np.log(mu/mu0))
     t_sol = t0 * (mu0 / mu)**2
 
     return t_sol, lambda_sol
+
 
 def plot_phase_diagram(ax, label_bbox=False, xlabel=r"$\mu^2$", opaque_labels=False, lambda_max=1.0):
     """Phase diagram of the untilted potential in the (mu2, lambda) plane.

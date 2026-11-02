@@ -16,6 +16,7 @@ from nearcrit.toy_running import (
 )
 
 style.use(amsmath=True)
+
 # One a/c in each regime and at each critical value. The value between the two critical values is both
 # < a_over_c_CRIT_1 and > a_over_c_CRIT_2.
 a_over_c_lines = [

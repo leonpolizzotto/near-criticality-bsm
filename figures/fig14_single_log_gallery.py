@@ -17,6 +17,8 @@ from nearcrit.toy_running import (
 
 style.use(amsmath=True)
 plt.rcParams["hatch.linewidth"] = 0.3
+
+
 # Gallery of the potential phases of the single log potential V = -a x^2 + c x^4 ln x (as c V4p8(x, a/c)), named as
 # above: for c > 0 by the ground state phase (0 or II) and the number of extrema at x > 0, for c < 0 NGS and that number.
 # The extrema at x > 0 are at the same a/c for either sign of c (where F = a/c), with minima and maxima swapped; x = 0 is

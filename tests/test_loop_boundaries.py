@@ -14,6 +14,8 @@ from nearcrit.loop_boundaries import (
     EVENTS, _BRACKET_EVENTS, _PAIR_EVENTS, _edge_list, solve_edges, structural_event,
 )
 from nearcrit.loop_maps import LOOP_RG, MU, omega_grid
+
+
 def check_edges(res, edges, map_kwargs, delta=0.002, max_edges=None, rng=None):
     """Re-run loop_phase_map just either side of each solved crossing point (at s -/+ delta edge lengths) and check
     that the result matches the grid point on that side: the extremum structure for potential transitions, the

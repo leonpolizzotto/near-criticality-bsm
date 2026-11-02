@@ -27,32 +27,46 @@ from nearcrit.singlet_tree import PHASE_LABELS, tree_potential_phase_map_Omega
 from nearcrit.style import LINEWIDTH_IN
 
 style.use()
+
+
 def V(hbar, sbar, mu2H, mu2S, kappa, OmegaH, OmegaS):
+    """The tree-level potential in the barred fields (squares carry the signs of the mu^2), at the given Omegas."""
     return (mu2H * mu2S / kappa) * (- hbar**2 / OmegaH
                                     - sbar**2 / OmegaS
                                     + hbar**2 * sbar**2 / (OmegaH * OmegaS)
                                     + hbar**4 / (2 * OmegaH)
                                     + sbar**4 / (2 * OmegaS))
 
+
 def dVh_eq_0(hbar, sbar, OmegaS):
+    """dV/dhbar = 0 off the axis hbar = 0 (up to a factor)."""
     return - 1.0 + hbar**2 + sbar**2 / OmegaS
 
+
 def dVs_eq_0(hbar, sbar, OmegaH):
+    """dV/dsbar = 0 off the axis sbar = 0 (up to a factor)."""
     return - 1.0 + sbar**2 + hbar**2 / OmegaH
 
 
-# The extrema bar P_k = (|H|_k / v_0, |S|_k / w_0) of the draft, in the plotted coordinates; None where they do
+# The extrema bar P_k = (|H|_k / v_0, |S|_k / w_0) of the paper, in the plotted coordinates; None where they do
 # not exist.
 def P0():
+    """The origin."""
     return 0.0, 0.0
 
+
 def P1(mu2H):
+    """The H-axis extremum in the plotted coordinates, or None."""
     return (1.0, 0.0) if mu2H > 0 else None
 
+
 def P2(mu2S):
+    """The S-axis extremum in the plotted coordinates, or None."""
     return (0.0, 1.0) if mu2S > 0 else None
 
+
 def P3(mu2H, mu2S, OmegaH, OmegaS):
+    """The mixed extremum in the plotted coordinates, or None where it does not exist."""
     x2 = np.sign(mu2H) * OmegaH * (OmegaS - 1.0) / (OmegaH * OmegaS - 1.0)
     y2 = np.sign(mu2S) * OmegaS * (OmegaH - 1.0) / (OmegaH * OmegaS - 1.0)
     return (np.sqrt(x2), np.sqrt(y2)) if x2 > 0 and y2 > 0 else None
@@ -65,6 +79,7 @@ def bar_fields(x, y, mu2H, mu2S):
 
 
 def V_xy(x, y, p):
+    """The potential of panel p at the plotted coordinates (x, y) = (|H|/v_0, |S|/w_0)."""
     return V(*bar_fields(x, y, p["mu2H"], p["mu2S"]), **p).real
 
 
@@ -104,7 +119,7 @@ PANELS = {
     "IIIc": dict(OmegaH=3/4, OmegaS=2,   mu2H=1,  mu2S=-1, kappa=-1),  # (II'')
 }
 
-# The extrema of each potential phase, as in the table in the draft: {kind: points}.
+# The extrema of each potential phase, as in the table of the paper: {kind: points}.
 EXPECTED = {
     "0":    dict(global_=[0]),
     "Ia":   dict(global_=[1], local=[2], max=[0], saddle=[3]),
@@ -160,6 +175,7 @@ TOP_FACTOR = 2.5  # the colour scale ends at this many times the range of V over
 
 
 def plot_panel(ax, label, p, n=400):
+    """One panel: the potential of phase label (parameters p), the zero curves of the derivatives and the extrema."""
     g = np.linspace(0, XY_MAX, n)
     X, Y = np.meshgrid(g, g)
     Z = V_xy(X, Y, p)

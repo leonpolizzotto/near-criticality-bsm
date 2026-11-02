@@ -27,6 +27,7 @@ from nearcrit.toy_running import (
 
 figstyle.use(amsmath=True)
 plt.rcParams["hatch.linewidth"] = 0.3
+
 # Crossover: the circle of radius CO_RADIUS around the critical point, counterclockwise, laid out as the ground state
 # figures above. It is split into two contours joining the same two points, the
 # bottom and the left end (theta = pi, Phase I): contour 1 (-pi/2 <= theta <= pi) goes round the right and over the top

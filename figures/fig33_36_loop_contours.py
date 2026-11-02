@@ -67,6 +67,7 @@ DRAWING = {
 
 
 def output_name(name):
+    """File name of the figure of contour name."""
     return f"loop_contour_{name}_sm_rg.pdf"
 
 
@@ -175,7 +176,6 @@ def plot_along_contour(ax, d, values, color=CONTOUR_COLOR, set_limits=True, syml
     return line
 
 
-
 def make_figure(name, c, d, height_in=7.9):
     """The figure of contour name, with its settings c (geometry and DRAWING options) and data d."""
     r, kappa = c["r"], c["kappa"]
@@ -255,8 +255,8 @@ def make_figure(name, c, d, height_in=7.9):
     return fig
 
 
-
 def report(name, d):
+    """Print the transitions and the tree-level mass crossings along contour name."""
     print(f"{name}: transitions along the contour")
     for t in d["transitions"]:
         print(f"  theta = {t['theta']:.6f} (+- {t['width']:.0e}) at (Omega_H, Omega_S) = ({t['OH']:.4f}, {t['OS']:.4f}):"

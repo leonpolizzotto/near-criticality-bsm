@@ -1,28 +1,16 @@
 """Data for Figs. 33-36: the ground state of the RG-improved one-loop Higgs-singlet potential along an elliptical contour
-in the tree-level (Omega_H, Omega_S) plane, at fixed r = mu_S^2 / mu_H^2 and kappa: the one-loop version of Fig. 24.
-
-  - Top left: the phase map of the panel of loop_phase_grid_sm_rg.pdf or of loop_phase_zoom_sm_rg.pdf (same caches;
-    a closer view around the contour if one is given) with the contour, a dot at its start (theta = 0) and an
-    arrow showing its direction.
-
-  - loop_contour_r1_k05_sm_rg.pdf: r = 1, kappa = 0.5, round the triple point, missing the radiatively generated
-    phases.
-  - loop_contour_r2_k05_zoom_sm_rg.pdf: r = 2, kappa = 0.5, zoom (a), through phase d (I d and III d).
-  - loop_contour_rm05_km05_zoom_sm_rg.pdf: r = -0.5, kappa = -0.5, panel (c) of loop_phase_zoom_outer_sm_rg.pdf,
-    across the first-order line III -> III' of phase h.
-  - The other panels, against theta along the contour: the ground-state energy E_0 = V_min - V(0); the position of
-    the global minimum in tree-normalized fields, Hbar = H / sqrt(mu_H^2 / lambda_H) and Sbar = S / sqrt(mu_S^2 /
-    lambda_S); and the first three derivatives of E_0 projected on the unit tangent t of the contour,
-    (t.grad)^n E_0 for n = 1, 2, 3 (derivatives in Omega). A first-order transition is a jump in the first
-    derivative, a second-order one a jump in the second only. The background is the quantum phase (colour) and the
-    potential phase (hatch) at each point, with lines at the transitions as on the phase map.
+in the tree-level (Omega_H, Omega_S) plane, at fixed r = mu_S^2 / mu_H^2 and kappa: along the contour, the quantum and
+potential phase, the transitions between them, the ground-state energy E_0 = V_min - V(0), the position of the global
+minimum, and the first three derivatives of E_0 projected on the unit tangent t of the contour, (t.grad)^n E_0 for
+n = 1, 2, 3 (derivatives in Omega). A first-order transition is a jump in the first derivative, a second-order one a
+jump in the second only.
 
 How it is computed:
   - The global minimum at every point of the contour from the full search of loop_phase_map (as the phase maps).
   - The transitions along the contour, where the quantum or potential phase changes, by bisection in theta; first
     order where the ground state jumps across it.
-  - The derivatives by 5-point central differences along t (step at most H_STEP_REL times the smaller semi-axis, in Omega). At each stencil point the
-    minimum is solved for by Newton, starting from the global minimum of the centre point and keeping its kind (on
+  - The derivatives by 5-point central differences along t (step at most H_STEP_REL times the smaller semi-axis,
+    in Omega). At each stencil point the minimum is solved for by Newton, starting from the global minimum of the centre point and keeping its kind (on
     the H axis, on the S axis, or off the axes, in (H^2, S^2)). This follows that branch smoothly also where the
     stencil reaches across a first-order transition (as a metastable minimum), so each point gets the derivatives
     of its own phase. Near a quantum transition the step shrinks (to a tenth of the distance), so that the stencil
@@ -41,7 +29,7 @@ contour; the script prints where). This is the Goldstone (IR) problem of the fix
 resummation cures; it is not numerical. Where S -> 0 (III -> I)
 nothing becomes massless, as S has no gauge or Yukawa couplings, and the derivatives stay finite on both sides.
 
-Same physics, inputs and conventions as loop_phase_grid.py (RG-improved, Lambda = 10 TeV), whose drawing it reuses.
+Same physics and inputs as the phase maps (nearcrit/loop_maps.py: RG-improved, Lambda = 10 TeV).
 
 Writes data/loop_contour_<name>.npz for each contour (about 40 s each; `--only NAME` for one).
 """
@@ -142,7 +130,7 @@ def global_minima(r, kappa, OH, OS, new_letters):
 
 def find_transitions(c, theta, g, new_letters):
     """Where the (quantum, potential) phase changes between neighbouring contour points, located by bisection in
-    theta, and classified as on the phase maps (line_edges in loop_phase_grid.py): a change of the potential phase
+    theta, and classified as on the phase maps (line_edges in nearcrit/loop_maps.py): a change of the potential phase
     within one quantum phase is a potential transition (purple); a change of the quantum phase is first order where
     the ground state jumps (or the tree-level table says so), second order otherwise.
 
@@ -266,6 +254,8 @@ def tree_mass_zeros(c, theta, OH, OS, g):
 
 
 def contour_data(name, c):
+    """Everything along contour c (see the module docstring): the points, the transitions between them, the
+    ground state and the projected derivatives of E_0."""
     theta = np.linspace(*c["theta_lim"], N_THETA)
     OH, OS, tH, tS = ellipse(c, theta)
     new_letters = {}
@@ -318,7 +308,6 @@ def contour_data(name, c):
                 crossings=tree_mass_zeros(c, theta, OH, OS, g),
                 **{k: g[k] for k in ("Q", "P", "kind", "Hbar", "Sbar", "x", "y")},
                 E=d["E"], d1=d["d1"], d2=d["d2"], d3=d["d3"], d3_half=d_half["d3"])
-
 
 
 def transition_ends(c, d):

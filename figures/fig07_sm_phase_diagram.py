@@ -33,6 +33,8 @@ def load():
     """The grids of both panels, {"wide": {...}, "zoom": {...}}."""
     data = np.load(DATA, allow_pickle=False)
     return {p: {k[len(p) + 1:]: data[k] for k in data.files if k.startswith(p + "_")} for p in ("wide", "zoom")}
+
+
 def sm_ellipse(delta_chi2=2.30, n=200):
     """CL region of (u, y_0) from eqs. (55) and (57), propagating the errors of M_t, alpha_3, M_h linearly."""
     # Jacobian of (55), (57) with respect to (M_t, alpha_3 in units of its error, M_h).
