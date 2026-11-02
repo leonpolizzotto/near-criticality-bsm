@@ -1,0 +1,16 @@
+# The exact versions the figures were made and verified with (Python 3.12.3, Linux).
+# The figures also need a LaTeX installation for matplotlib's usetex: latex and dvipng with the
+# type1cm, type1ec (cm-super) and amsmath packages (TeX Live 2026 was used).
+numpy==2.4.4
+scipy==1.17.1
+matplotlib==3.10.9
+# matplotlib's dependencies
+contourpy==1.3.3
+cycler==0.12.1
+fonttools==4.62.1
+kiwisolver==1.5.0
+packaging==26.2
+pillow==12.2.0
+pyparsing==3.3.2
+python-dateutil==2.9.0.post0
+six==1.17.0
